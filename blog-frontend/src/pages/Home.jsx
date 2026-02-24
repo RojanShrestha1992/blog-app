@@ -1,26 +1,13 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import PostList from "../components/PostList";
 import PostForm from "../components/PostForm";
 import Navbar from "../components/Navbar";
-import { getCurrentUser } from "../api/api";
 
-const Home = () => {
-    const [loggedInUserId, setLoggedInUserId] = useState(null)
+const Home = ({ loggedInUser, onLogout }) => {
   const [refresh, setRefresh] = useState(false);
   const [currentView, setCurrentView] = useState("all");
   const [showModal, setShowModal] = useState(false);
-
-
-
-  useEffect(()=>{
-    const fetchUser = async () => {
-        const user = await getCurrentUser();
-        if(user){
-            setLoggedInUserId(user._id)
-        }
-    }
-    fetchUser()
-  }, [])
+  const loggedInUserId = loggedInUser?._id ?? null;
 
   const handleNavClick = (view) => {
     if (view === "create") {
@@ -32,19 +19,21 @@ const Home = () => {
   const closeModal = () => setShowModal(false);
   console.log("loggedInUserId in home", loggedInUserId)
   return (
-    <div>
-      <Navbar onNavClick={handleNavClick} />
+    <div className="min-h-screen bg-slate-100">
+      <Navbar onNavClick={handleNavClick} user={loggedInUser} onLogout={onLogout} />
 
       {/* modal for creating post */}
       {showModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white p-4 rounded w-full max-w-md">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/60 p-4 backdrop-blur-sm">
+          <div className="relative w-full max-w-2xl rounded-2xl border border-slate-200 bg-white p-6 shadow-2xl">
             <button
-              className="absolute top-2 right-2 text-gray-500 hover:text-gray-700"
+              className="absolute right-4 top-4 rounded-lg px-2 py-1 text-2xl leading-none text-slate-500 transition hover:bg-slate-100 hover:text-slate-800"
               onClick={closeModal}
             >
               ×
             </button>
+            <h2 className="mb-1 text-2xl font-bold text-slate-900">Create a new post</h2>
+            <p className="mb-5 text-sm text-slate-600">Write your title, content, and tags to publish instantly.</p>
             <PostForm
               onPostCreated={() => {
                 // closeModal();

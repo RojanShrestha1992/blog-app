@@ -27,14 +27,28 @@ const PostList = ({ filterByUser, currentUserId }) => {
   }, [filterByUser])
 
   return (
-    <div className='max-w-3xl mx-auto p-4'>
-      <h1 className='text-3xl font-bold mb-4'>{filterByUser ? "My Posts" : "All Posts"}</h1>
-      {
-        posts.map((post)=>(
-          <Post key={post._id} post={post} currentUserId={currentUserId} />
-        ))
-      }
-    </div>
+    <main className='mx-auto w-full max-w-6xl px-4 py-8 sm:px-6'>
+      <section className='mb-8 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm'>
+        <h1 className='text-3xl font-bold tracking-tight text-slate-900'>{filterByUser ? "My Posts" : "Latest Posts"}</h1>
+        <p className='mt-2 text-sm text-slate-600'>
+          {filterByUser ? "Posts you have published recently." : "Discover ideas, stories, and updates from the community."}
+        </p>
+      </section>
+
+      {posts.length === 0 ? (
+        <div className='rounded-2xl border border-dashed border-slate-300 bg-white p-10 text-center text-slate-600'>
+          No posts found yet.
+        </div>
+      ) : (
+        <div className='space-y-5'>
+          {
+            posts.map((post)=>(
+              <Post key={post._id} post={post} currentUserId={currentUserId} />
+            ))
+          }
+        </div>
+      )}
+    </main>
   )
 }
 
