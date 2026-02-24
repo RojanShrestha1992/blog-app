@@ -1,8 +1,14 @@
-import React from 'react'
+import React, { useState } from 'react'
+import PostList from './components/PostList'
+import Home from './pages/Home'
+import Login from './pages/Login'
 
 const App = () => {
-  return (
-    <div>App</div>
+  const [loggedIn, setLoggedIn] = useState(false)
+  return loggedIn ? (
+      <Home/>
+  ) : (
+    <Login onLogin={()=> setLoggedIn(true)}/>
   )
 }
 

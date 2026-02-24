@@ -66,7 +66,18 @@ const loginUser = async (req, res)=>{
 }
 
 
+const getMe = async (req, res)=> {
+    if(!req.user) return res.status(401).json({message: "Not authorized"})
+    res.json({
+        _id: req.user._id,
+        name: req.user.name,
+        email: req.user.email
+    })
+}
+
+
 module.exports = {
     registerUser,
-    loginUser
+    loginUser,
+    getMe
 }
