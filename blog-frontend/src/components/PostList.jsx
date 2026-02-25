@@ -6,10 +6,12 @@ import Post from './Post'
 const PostList = ({ filterByUser, currentUserId }) => {
   const [posts, setPosts] = useState([])
 
-
+  const feedTitle = filterByUser ? 'My Posts' : 'Home Feed'
+  const feedDescription = filterByUser
+    ? 'Everything you have posted in one place.'
+    : 'Fresh updates from the community.'
 
   useEffect(()=>{
-    console.log("filterbyuser in postlist", filterByUser)
     const loadPosts = async () =>{
       try{
         const {data} = await fetchPosts()
@@ -27,17 +29,15 @@ const PostList = ({ filterByUser, currentUserId }) => {
   }, [filterByUser])
 
   return (
-    <main className='mx-auto w-full max-w-6xl px-4 py-8 sm:px-6'>
-      <section className='mb-8 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm'>
-        <h1 className='text-3xl font-bold tracking-tight text-slate-900'>{filterByUser ? "My Posts" : "Latest Posts"}</h1>
-        <p className='mt-2 text-sm text-slate-600'>
-          {filterByUser ? "Posts you have published recently." : "Discover ideas, stories, and updates from the community."}
-        </p>
+    <main className='mx-auto w-full max-w-3xl px-4 pb-10 pt-6 sm:px-6'>
+      <section className='mb-6 rounded-3xl border border-indigo-200/90 bg-indigo-50/85 px-5 py-5 shadow-lg shadow-indigo-200/70 backdrop-blur-sm'>
+        <h1 className='text-xl font-bold text-indigo-950 sm:text-2xl'>{feedTitle}</h1>
+        <p className='mt-1 text-sm leading-6 text-indigo-600'>{feedDescription}</p>
       </section>
 
       {posts.length === 0 ? (
-        <div className='rounded-2xl border border-dashed border-slate-300 bg-white p-10 text-center text-slate-600'>
-          No posts found yet.
+        <div className='rounded-3xl border border-dashed border-indigo-300 bg-indigo-50/80 p-12 text-center text-indigo-700 shadow-sm'>
+          No posts yet. Be the first to share something.
         </div>
       ) : (
         <div className='space-y-5'>

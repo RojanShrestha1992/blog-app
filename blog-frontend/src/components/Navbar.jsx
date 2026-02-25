@@ -3,17 +3,17 @@ import { useNavigate } from "react-router-dom";
 const Navbar = ({ onNavClick, user, onLogout }) => {
   const navigate = useNavigate();
   return (
-    <header className="sticky top-0 z-30 border-b border-slate-200 bg-white/90 backdrop-blur">
+    <header className="sticky top-0 z-30 border-b border-indigo-200/80 bg-indigo-50/80 shadow-sm shadow-indigo-200/70 backdrop-blur-xl">
       <nav className="mx-auto flex w-full max-w-6xl items-center justify-between px-4 py-4 sm:px-6">
         <div className="flex items-center gap-4">
           <button
-            className="text-2xl font-black tracking-tight text-slate-900"
+            className="bg-linear-to-r from-indigo-700 to-violet-600 bg-clip-text text-2xl font-black tracking-tight text-transparent"
             onClick={() => onNavClick("all")}
           >
             BlogSpace
           </button>
           <button
-            className="hidden rounded-lg px-3 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-100 sm:inline-flex"
+            className="hidden rounded-lg px-3 py-2 text-sm font-semibold text-indigo-700 transition hover:bg-indigo-50 sm:inline-flex"
             onClick={() => onNavClick("all")}
           >
             All Posts
@@ -25,13 +25,13 @@ const Navbar = ({ onNavClick, user, onLogout }) => {
             <>
               <button
                 onClick={() => navigate("/login")}
-                className="hover:bg-blue-700 px-3 py-1 rounded"
+                className="rounded-lg border border-indigo-300 bg-indigo-100/80 px-3 py-1.5 text-sm font-medium text-indigo-700 transition hover:bg-indigo-100"
               >
                 Login
               </button>
               <button
                 onClick={() => navigate("/register")}
-                className="hover:bg-blue-700 px-3 py-1 rounded"
+                className="rounded-lg bg-indigo-600 px-3 py-1.5 text-sm font-medium text-white shadow-sm shadow-indigo-200 transition hover:bg-indigo-700"
               >
                 Register
               </button>
@@ -39,20 +39,20 @@ const Navbar = ({ onNavClick, user, onLogout }) => {
           ) : (
             <>
               <button
-                className="rounded-lg bg-slate-900 px-4 py-2 text-sm font-semibold text-white transition hover:bg-slate-700"
+                className="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-sm shadow-indigo-200 transition hover:bg-indigo-700"
                 onClick={() => onNavClick("create")}
               >
                 Create Post
               </button>
               <button
-                className="rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-100"
+                className="rounded-lg border border-indigo-300 bg-indigo-100/80 px-4 py-2 text-sm font-semibold text-indigo-700 transition hover:bg-indigo-100"
                 onClick={() => onNavClick("profile")}
               >
                 My Posts
               </button>
               <button
                 onClick={onLogout}
-                className="hover:bg-red-700 px-3 py-1 rounded"
+                className="rounded-lg px-3 py-1.5 text-sm font-medium text-rose-600 transition hover:bg-rose-50"
               >
                 Logout
               </button>

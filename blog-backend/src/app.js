@@ -3,6 +3,7 @@ const cors = require('cors');
 const authRoutes = require('./routes/authRoutes')
 const postRoutes = require('./routes/postRoutes')
 const cookieParser = require('cookie-parser')
+const imagekitRoutes = require('./routes/imageKitRoutes')
 const app = express();
 
 
@@ -14,7 +15,7 @@ app.use(cors({
 }))
 app.use(cookieParser())
 
-
+app.use('/api/imagekit', imagekitRoutes)
 // app.get('/', (req, res) => {
 //     res.send('Hello World!');
 // });
@@ -22,5 +23,5 @@ app.use(cookieParser())
 //routes
 app.use('/api/auth', authRoutes)
 app.use('/api/posts', postRoutes)
-
+app.use('/api/imagekit', imagekitRoutes)
 module.exports = app;

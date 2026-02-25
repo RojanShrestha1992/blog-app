@@ -19,7 +19,14 @@ export const getCurrentUser = async () => {
 
 export const fetchPosts = () => API.get("/posts");
 export const fetchPostById = (id) => API.get(`/posts/${id}`);
-export const createPost = (postData) => API.post("/posts", postData);
+export const createPost = (postData) => {
+  if (postData instanceof FormData) {
+    return API.post("/posts", postData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
+  }
+  return API.post("/posts", postData);
+};
 export const updatePost = (id, postData) => API.put(`/posts/${id}`, postData);
 export const deletePost = (id) => API.delete(`/posts/${id}`);
 

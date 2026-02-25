@@ -12,6 +12,9 @@
   "dependencies": {
     "@tailwindcss/vite": "^4.2.0",
     "axios": "^1.13.5",
+    "imagekit": "^6.0.0",
+    "imagekit-javascript": "^4.0.1",
+    "multer": "^2.0.2",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "react-router-dom": "^7.13.1",
