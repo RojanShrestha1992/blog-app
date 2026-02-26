@@ -1,11 +1,13 @@
 import React from "react";
 import API, { toggleUpvote } from "../api/api";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { BiUpvote } from "react-icons/bi";
 import { useEffect } from "react";
 
-const Post = ({ post }) => {
+const Post = ({ post, isOwner=false, refreshPosts }) => {
   console.log("Rendering Post component with post:", post);
+  const navigate = useNavigate();
   const [postData, setPostData] = useState(post);
   const [upvote, setUpvote] = useState(false);
   const [comments, setComments] = useState([]);
@@ -57,6 +59,28 @@ const Post = ({ post }) => {
       console.error("Failed to toggle upvote", err);
     }
   };
+
+  const handleDeletePost = async () => {
+    if(!window.confirm("Are you sure you want to delete this post?")){
+      return;
+    }
+    try{
+      await API.delete(`/posts/${postData._id}`);
+      alert("Post deleted successfully");
+      if (typeof refreshPosts === "function") {
+        refreshPosts(postData._id);
+      }
+    }catch(err){
+      console.error("Failed to delete post", err);
+      alert("Failed to delete post. Please try again.")
+    }
+  }
+
+  const handleUpdatePost = async (updatedPostData) => {
+    navigate(`/update-post/${postData._id}`, { state: { post: updatedPostData } });
+  }
+
+
   const formatTimeAgo = (date) => {
     const now = new Date();
     const seconds = Math.floor((now - date) / 1000);
@@ -153,6 +177,22 @@ const Post = ({ post }) => {
           ↗ Share
         </button>
       </div>
+      {isOwner && (
+  <div className="flex gap-2 px-5 pb-3">
+    <button
+      className="rounded bg-yellow-400 px-3 py-1 text-sm font-medium text-white hover:bg-yellow-500 transition"
+      onClick={() => handleUpdatePost(postData._id)}
+    >
+      Update
+    </button>
+    <button
+      className="rounded bg-red-500 px-3 py-1 text-sm font-medium text-white hover:bg-red-600 transition"
+      onClick={handleDeletePost}
+    >
+      Delete
+    </button>
+  </div>
+)}
       <div className="px-5 py-4">
         <form onSubmit={handleCommentSubmit} className={`${showCommentBox ? "flex" : "hidden"} items-center gap-2`}>
           <input

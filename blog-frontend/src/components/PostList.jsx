@@ -6,6 +6,10 @@ import Post from './Post'
 const PostList = ({ filterByUser, currentUserId }) => {
   const [posts, setPosts] = useState([])
 
+  const refreshPosts = (deletedPostId) => {
+    setPosts((prev) => prev.filter((item) => item._id !== deletedPostId));
+  };
+
   const feedTitle = filterByUser ? 'My Posts' : 'Home Feed'
   const feedDescription = filterByUser
     ? 'Everything you have posted in one place.'
@@ -43,7 +47,13 @@ const PostList = ({ filterByUser, currentUserId }) => {
         <div className='space-y-5'>
           {
             posts.map((post)=>(
-              <Post key={post._id} post={post} currentUserId={currentUserId} />
+              <Post
+                isOwner={post.author?._id?.toString() === currentUserId?.toString()}
+                key={post._id}
+                post={post}
+                currentUserId={currentUserId}
+                refreshPosts={refreshPosts}
+              />
             ))
           }
         </div>
