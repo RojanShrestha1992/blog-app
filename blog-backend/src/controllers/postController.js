@@ -92,21 +92,31 @@ const updatePost = async (req, res) => {
 };
 
 const deletePost = async (req, res) => {
-  const post = await Post.findById(req.params.id);
-  if (!post) {
-    return res.status(404).json({ message: "Post not found" });
+  try {
+    const post = await Post.findById(req.params.id);
+    if (!post) {
+      return res.status(404).json({ message: "Post not found" });
+    }
+
+    if (post.author.toString() !== req.user._id.toString()) {
+      return res.status(401).json({ message: "Not authorized" });
+    }
+
+    if (post.media) {
+      try {
+        const fileId = post.media.split("/").pop().split(".")[0];
+        await imagekit.deleteFile(fileId);
+      } catch (imagekitErr) {
+        console.warn("ImageKit delete skipped/failed:", imagekitErr.message);
+      }
+    }
+
+    await post.deleteOne();
+    res.json({ message: "Post removed" });
+  } catch (err) {
+    console.error("Failed to delete post", err);
+    res.status(500).json({ message: "Server error" });
   }
-  //check if current user is the author of the post
-  if (post.author.toString() !== req.user._id.toString()) {
-    return res.status(401).json({ message: "Not authorized" });
-  }
-  //delete from imagekit if media exists
-  if (post.media) {
-    const fileId = post.media.split("/").pop().split(".")[0]; // extract fileId from url
-    await imagekit.deleteFile(fileId);
-  }
-  await post.deleteOne({ id: req.params.id });
-  res.json({ message: "Post removed" });
 };
 
 // @route PUT /api/posts/:id/upvote

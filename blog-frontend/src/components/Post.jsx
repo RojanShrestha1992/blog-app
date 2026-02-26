@@ -90,7 +90,7 @@ const Post = ({ post, isOwner=false, refreshPosts, currentUserId }) => {
       }
     }catch(err){
       console.error("Failed to delete post", err);
-      alert("Failed to delete post. Please try again.")
+      alert("Failed to delete post. Please try agains.")
     }
   }
 
