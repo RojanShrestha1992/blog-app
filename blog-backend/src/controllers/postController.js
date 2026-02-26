@@ -112,10 +112,39 @@ const deletePost = async (req, res) => {
     res.json({message: "Post removed"})
 }
 
+
+// @route PUT /api/posts/:id/upvote
+
+const toggleUpvote = async (req, res) => {
+  try{
+    const post = await Post.findById(req.params.id);
+    const userId = req.user._id;
+
+    if(!post){
+      return res.status(404).json({message: "Post not found"})
+    }
+    const alreadyUpvoted = post.upvotes.some((id) => id.toString() === userId.toString());
+
+    if(alreadyUpvoted){
+      post.upvotes = post.upvotes.filter((id)=> id.toString() !== userId.toString());
+    } else {
+      post.upvotes.push(userId);
+    }
+    await post.save();
+    res.json({upvotes: post.upvotes, upvoted: !alreadyUpvoted})
+  }catch(err){
+    console.error("Failed to toggle upvote", err);
+    res.status(500).json({message: "Server error"})
+  }
+}
+
+
+
 module.exports = {
     createPost,
     getPosts,
     getPostById,
     updatePost,
-    deletePost
+    deletePost,
+    toggleUpvote
 }

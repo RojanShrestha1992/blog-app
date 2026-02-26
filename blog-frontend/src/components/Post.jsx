@@ -1,10 +1,27 @@
 import React from "react";
+import { toggleUpvote } from "../api/api";
+import { useState } from "react";
+import { BiUpvote } from "react-icons/bi";
 
 const Post = ({ post }) => {
-  const authorName = post.author?.name || "Unknown";
-  const createdDate = new Date(post.createdAt);
+  console.log("Rendering Post component with post:", post);
+  const [postData, setPostData] = useState(post);
+  const [upvote, setUpvote] = useState(false);
+  const authorName = postData.author?.name || "Unknown";
+  const createdDate = new Date(postData.createdAt);
   const authorInitial = authorName.charAt(0).toUpperCase();
 
+  const handleUpvote = async () => {
+    try {
+      const res = await toggleUpvote(postData.id || postData._id);
+      setPostData((prev) => ({
+        ...prev,
+        upvotes: res.data.upvotes || prev.upvotes || [],
+      }));
+    } catch (err) {
+      console.error("Failed to toggle upvote", err);
+    }
+  };
   const formatTimeAgo = (date) => {
     const now = new Date();
     const seconds = Math.floor((now - date) / 1000);
@@ -43,15 +60,15 @@ const Post = ({ post }) => {
 
       <div className="px-5 py-4">
         <h2 className="text-lg font-bold leading-snug text-indigo-950 sm:text-xl">
-          {post.title}
+          {postData.title}
         </h2>
         <p className="mt-3 whitespace-pre-line text-[15px] leading-7 text-indigo-900/85">
-          {post.content}
+          {postData.content}
         </p>
 
-        {(post.tags || []).length > 0 && (
+        {(postData.tags || []).length > 0 && (
           <div className="mt-4 flex flex-wrap items-center gap-2">
-            {(post.tags || []).map((tag) => (
+            {(postData.tags || []).map((tag) => (
               <span
                 key={tag}
                 className="rounded-full bg-violet-200/80 px-3 py-1 text-xs font-medium text-violet-800"
@@ -62,15 +79,18 @@ const Post = ({ post }) => {
           </div>
         )}
       </div>
-      {post.media && (
+      {postData.media && (
         <div className="px-5 pb-4">
-          {post.media.match(/\.(mp4|webm|ogg)$/i) ? (
-            <video controls className="mt-2 max-h-115 w-full rounded-2xl object-cover ring-1 ring-indigo-100">
-              <source src={post.media} />
+          {postData.media.match(/\.(mp4|webm|ogg)$/i) ? (
+            <video
+              controls
+              className="mt-2 max-h-115 w-full rounded-2xl object-cover ring-1 ring-indigo-100"
+            >
+              <source src={postData.media} />
             </video>
           ) : (
             <img
-              src={post.media}
+              src={postData.media}
               alt="post"
               className="mt-2 max-h-115 w-full rounded-2xl object-cover ring-1 ring-indigo-100"
             />
@@ -80,10 +100,17 @@ const Post = ({ post }) => {
 
       <div className="flex items-center justify-between border-t border-indigo-100 px-5 py-3 text-sm text-indigo-600">
         <div className="flex items-center gap-4">
-          <button className="font-medium transition hover:text-indigo-900">
-            ⬆ Upvote
+          <button
+            onClick={() => {
+              handleUpvote();
+              setUpvote(!upvote);
+            }}
+            className={`font-medium flex items-center gap-1 transition hover:text-red-600 text-lg cursor-pointer ${upvote ? "text-red-600" : ""}`}
+          >
+            <BiUpvote />
+            {(postData.upvotes || []).length}
           </button>
-          <button className="font-medium transition hover:text-indigo-900">
+          <button className="cursor-pointer font-medium transition hover:text-indigo-900">
             💬 Comment
           </button>
         </div>

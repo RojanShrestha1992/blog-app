@@ -30,4 +30,6 @@ export const createPost = (postData) => {
 export const updatePost = (id, postData) => API.put(`/posts/${id}`, postData);
 export const deletePost = (id) => API.delete(`/posts/${id}`);
 
+export const toggleUpvote = (id) => API.put(`/posts/${id}/upvote`);
+
 export default API;

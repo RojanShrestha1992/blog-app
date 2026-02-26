@@ -21,7 +21,13 @@ const postSchema = new mongoose.Schema({
     media:{
         type: String,
         default: ""
-    }
+    },
+    upvotes:[
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'User'
+        }
+    ]
 }, {
     timestamps: true
 })

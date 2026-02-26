@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const {createPost, getPosts, getPostById, updatePost, deletePost} = require('../controllers/postController')
+const {createPost, getPosts, getPostById, updatePost, deletePost, toggleUpvote} = require('../controllers/postController')
 const {protect} = require('../middleware/authMiddleware')
 const multer = require('multer')
 
@@ -15,6 +15,6 @@ router.get('/:id', getPostById)
 router.post('/', protect, upload.single('media'), createPost)
 router.put('/:id', protect, updatePost)
 router.delete('/:id', protect, deletePost)
-
+router.put('/:id/upvote', protect, toggleUpvote)
 
 module.exports = router;
