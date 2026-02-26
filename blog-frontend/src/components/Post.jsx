@@ -4,9 +4,11 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { BiUpvote } from "react-icons/bi";
 import { useEffect } from "react";
+import {toast} from "react-toastify"
 
-const Post = ({ post, isOwner=false, refreshPosts }) => {
-  console.log("Rendering Post component with post:", post);
+const Post = ({ post, isOwner=false, refreshPosts, currentUserId }) => {
+  console.log("currentUserId in Post component:", currentUserId);
+  // console.log("Rendering Post component with post:", post);
   const navigate = useNavigate();
   const [postData, setPostData] = useState(post);
   const [upvote, setUpvote] = useState(false);
@@ -36,25 +38,41 @@ const Post = ({ post, isOwner=false, refreshPosts }) => {
       return;
     }
     try{
+      if(!currentUserId){
+        // onSuccess?.("You must be logged in to comment.", "error")
+        toast.error("You must be logged in to comment.")
+
+        return;
+      }
       const res = await API.post('/comments', {
         postId: postData._id,
         text: commentText
     })
     setComments((prev) => [res.data, ...prev]);
     setCommentText("");
+    // onSuccess?.("Comment posted successfully!")
+    toast.success("Comment posted successfully!")
     }catch(err){
       console.error("Failed to submit comment", err);
+      toast.error("Failed to post comment. Please try again.")
     }
   }
 
 
   const handleUpvote = async () => {
     try {
+      if(!currentUserId){
+        // onSuccess?.("You must be logged in to upvote.", "error")
+        toast.error("You must be logged in to upvote.")
+
+        return;
+      }
       const res = await toggleUpvote(postData.id || postData._id);
       setPostData((prev) => ({
         ...prev,
         upvotes: res.data.upvotes || prev.upvotes || [],
       }));
+      toast.success(res.data.upvoted ? "Post upvoted!" : "Upvote removed!")
     } catch (err) {
       console.error("Failed to toggle upvote", err);
     }
@@ -100,7 +118,7 @@ const Post = ({ post, isOwner=false, refreshPosts }) => {
   };
 
   return (
-    <article className="overflow-hidden rounded-3xl border border-indigo-200/90 bg-indigo-50/90 shadow-md shadow-indigo-200/70 transition hover:-translate-y-0.5 hover:shadow-lg">
+    <article className="overflow-hidden rounded-3xl border border-indigo-200/90 bg-[#E7E7E7] shadow-md shadow-indigo-200/70 transition hover:-translate-y-0.5 hover:shadow-lg">
       <header className="flex items-center gap-3 border-b border-indigo-100 px-5 py-4">
         <div className="flex h-10 w-10 items-center justify-center rounded-full bg-indigo-700 text-sm font-semibold text-white">
           {authorInitial}
@@ -161,15 +179,21 @@ const Post = ({ post, isOwner=false, refreshPosts }) => {
         <div className="flex items-center gap-4">
           <button
             onClick={() => {
+              if (!currentUserId) {
+                toast.error("You must be logged in to upvote.");
+                return;
+              }
+              
               handleUpvote();
               setUpvote(!upvote);
             }}
-            className={`font-medium flex items-center gap-1 transition hover:text-red-600 text-lg cursor-pointer ${upvote ? "text-red-600" : ""}`}
+             disabled={!currentUserId}
+            className={`font-medium flex items-center gap-1 transition  text-lg   hover:text-red-600 cursor-pointer ${upvote ? "text-red-600" : ""}`}
           >
             <BiUpvote />
             {(postData.upvotes || []).length}
           </button>
-          <button onClick={()=> setShowCommentBox(!showCommentBox)} className="cursor-pointer font-medium transition hover:text-indigo-900">
+          <button  onClick={()=> setShowCommentBox(!showCommentBox)} className="cursor-pointer font-medium transition hover:text-indigo-900">
             💬 Comment
           </button>
         </div>

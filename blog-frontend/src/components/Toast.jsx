@@ -9,7 +9,7 @@ const Toast = ({ message, type = "success", onClose }) => {
       : "border-indigo-200 bg-indigo-50 text-indigo-700";
 
   return (
-    <div className="pointer-events-none fixed right-4 top-4 z-100 w-full max-w-sm">
+    <div className="pointer-events-none fixed right-4 top-4 z-100 w-full max-w-sm" style={{ zIndex: 9999 }}>
       <div
         className={`pointer-events-auto flex items-start justify-between gap-3 rounded-2xl border px-4 py-3 shadow-lg backdrop-blur-sm ${typeStyles}`}
         role="status"

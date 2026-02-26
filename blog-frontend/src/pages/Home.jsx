@@ -3,7 +3,7 @@ import PostList from "../components/PostList";
 import PostForm from "../components/PostForm";
 import Navbar from "../components/Navbar";
 
-const Home = ({ loggedInUser, onLogout }) => {
+const Home = ({ loggedInUser, onLogout, onSuccess }) => {
   const [refresh, setRefresh] = useState(false);
   const [currentView, setCurrentView] = useState("all");
   const [showModal, setShowModal] = useState(false);
@@ -38,6 +38,7 @@ const Home = ({ loggedInUser, onLogout }) => {
                 // closeModal();
                 setShowModal(false);
                 setRefresh(!refresh);
+                onSuccess?.("Post created successfully!");
               }}
             />
           </div>
@@ -48,13 +49,19 @@ const Home = ({ loggedInUser, onLogout }) => {
 
       {/* Views */}
       {currentView === "all" && (
-        <PostList key={refresh + "-all"} currentUserId={loggedInUserId} filterByUser={null} />
+        <PostList
+          key={refresh + "-all"}
+          currentUserId={loggedInUserId}
+          filterByUser={null}
+          onSuccess={onSuccess}
+        />
       )}
       {currentView === "profile" && (
         <PostList
           key={refresh + "-profile"}
           currentUserId={loggedInUserId}
           filterByUser={loggedInUserId}
+          onSuccess={onSuccess}
         />
       )}
 

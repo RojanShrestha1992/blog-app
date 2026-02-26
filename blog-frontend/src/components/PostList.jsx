@@ -3,7 +3,7 @@ import { fetchPosts } from '../api/api'
 import Post from './Post'
 
 
-const PostList = ({ filterByUser, currentUserId }) => {
+const PostList = ({ filterByUser, currentUserId, onSuccess }) => {
   const [posts, setPosts] = useState([])
 
   const refreshPosts = (deletedPostId) => {
@@ -53,7 +53,7 @@ const PostList = ({ filterByUser, currentUserId }) => {
                 post={post}
                 currentUserId={currentUserId}
                 refreshPosts={refreshPosts}
-              />
+                onSuccess={onSuccess}
             ))
           }
         </div>

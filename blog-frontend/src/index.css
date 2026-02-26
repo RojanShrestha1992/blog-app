@@ -10,7 +10,7 @@
 		background:
 			radial-gradient(circle at 0% 0%, rgba(99, 102, 241, 0.22), transparent 44%),
 			radial-gradient(circle at 100% 0%, rgba(139, 92, 246, 0.2), transparent 42%),
-			linear-gradient(to bottom, #eef1ff, #e8edff 46%, #ede6ff 100%);
+			linear-gradient(to bottom, #d6dcf7, #e0e7ff 20%, #d1c3f3 100%);
 		color: #1e1b4b;
 		-webkit-font-smoothing: antialiased;
 		-moz-osx-font-smoothing: grayscale;

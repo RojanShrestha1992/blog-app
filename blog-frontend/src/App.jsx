@@ -6,6 +6,9 @@ import Login from './pages/Login'
 import API, { getCurrentUser } from './api/api'
 import Register from './pages/Register'
 import Toast from './components/Toast'
+import { ToastContainer } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
+
 
 const App = () => {
   // const [loggedIn, setLoggedIn] = useState(false)
@@ -52,8 +55,9 @@ const handleLogout = async () => {
           type={toast.type}
           onClose={() => setToast({ message: '', type: 'success' })}
         />
+        <ToastContainer position="top-right" autoClose={2500} hideProgressBar={false} closeOnClick pauseOnHover newestOnTop draggable={false} />
         <Routes>
-          <Route path="/" element={<Home loggedInUser={user} onLogout={handleLogout} />} />
+          <Route path="/" element={<Home loggedInUser={user} onLogout={handleLogout} onSuccess={showToast} />} />
           <Route path="/login" element={<Login onLogin={setUser} onSuccess={showToast} />} /> 
           <Route path="/register" element={<Register onRegister={setUser} onSuccess={showToast} />} />
           <Route path="*" element={<Navigate to="/" />} />
