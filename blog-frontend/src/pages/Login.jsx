@@ -17,6 +17,7 @@ const Login = ({ onLogin, onSuccess }) => {
       navigate("/")
     }
     catch(err){
+      onSuccess?.("Login failed. Please check your credentials.")
         console.error("Login failed", err)
     }
 

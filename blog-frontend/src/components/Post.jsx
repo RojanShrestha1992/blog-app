@@ -1,15 +1,50 @@
 import React from "react";
-import { toggleUpvote } from "../api/api";
+import API, { toggleUpvote } from "../api/api";
 import { useState } from "react";
 import { BiUpvote } from "react-icons/bi";
+import { useEffect } from "react";
 
 const Post = ({ post }) => {
   console.log("Rendering Post component with post:", post);
   const [postData, setPostData] = useState(post);
   const [upvote, setUpvote] = useState(false);
+  const [comments, setComments] = useState([]);
+  const [commentText, setCommentText] = useState("");
+  const [showCommentBox, setShowCommentBox] = useState(false);
   const authorName = postData.author?.name || "Unknown";
   const createdDate = new Date(postData.createdAt);
   const authorInitial = authorName.charAt(0).toUpperCase();
+
+  useEffect(() => {
+    const fetchComments = async () => {
+      try {
+        const res = await API.get(`/comments/${postData._id}`);
+        setComments(res.data);
+      } catch (err) {
+        console.error("Failed to fetch comments", err);
+      }
+    };
+    fetchComments();
+  }, [postData._id]);
+
+  const handleCommentSubmit = async (e) => {
+    e.preventDefault();
+
+    if(!commentText.trim()){
+      return;
+    }
+    try{
+      const res = await API.post('/comments', {
+        postId: postData._id,
+        text: commentText
+    })
+    setComments((prev) => [res.data, ...prev]);
+    setCommentText("");
+    }catch(err){
+      console.error("Failed to submit comment", err);
+    }
+  }
+
 
   const handleUpvote = async () => {
     try {
@@ -110,13 +145,47 @@ const Post = ({ post }) => {
             <BiUpvote />
             {(postData.upvotes || []).length}
           </button>
-          <button className="cursor-pointer font-medium transition hover:text-indigo-900">
+          <button onClick={()=> setShowCommentBox(!showCommentBox)} className="cursor-pointer font-medium transition hover:text-indigo-900">
             💬 Comment
           </button>
         </div>
         <button className="font-medium transition hover:text-indigo-900">
           ↗ Share
         </button>
+      </div>
+      <div className="px-5 py-4">
+        <form onSubmit={handleCommentSubmit} className={`${showCommentBox ? "flex" : "hidden"} items-center gap-2`}>
+          <input
+            type="text"
+            value={commentText}
+            onChange={(e) => setCommentText(e.target.value)}
+            placeholder="Add a comment..."
+            className="flex-1 rounded-full border border-indigo-200 bg-white px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          />
+          <button
+            type="submit"
+            className="rounded-full bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          >
+            Post
+          </button>
+        </form>
+        <div className="px-5 py-3 space-y-2">
+          {
+            comments.length === 0 && (
+              <p className="text-sm text-indigo-500">No comments yet. Be the first to comment!</p>
+            )
+          }
+          {
+            comments.map((comment) => (
+              <div key={comment._id} className="border border-indigo-100 rounded-lg px-4 py-2">
+                <p className="text-sm font-semibold text-indigo-900">{comment.user?.name || "Unknown"}</p>
+                <p className="text-sm text-indigo-700">{comment.text}</p>
+                <p className="text-xs text-indigo-500">{formatTimeAgo(new Date(comment.createdAt))}</p>
+              </div>
+             )
+            )
+          }
+        </div>
       </div>
     </article>
   );
