@@ -32,4 +32,6 @@ export const deletePost = (id) => API.delete(`/posts/${id}`);
 
 export const toggleUpvote = (id) => API.put(`/posts/${id}/upvote`);
 
+export const fetchProfile = (userId) => API.get(`/users/${userId}`)
+
 export default API;

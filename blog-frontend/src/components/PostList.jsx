@@ -41,7 +41,7 @@ const PostList = ({ filterByUser, currentUserId }) => {
 
       {posts.length === 0 ? (
         <div className='rounded-3xl border border-dashed border-indigo-300 bg-indigo-50/80 p-12 text-center text-indigo-700 shadow-sm'>
-          No posts yet. Be the first to share something.
+         {filterByUser ? "You haven't posted anything yet." : "No posts yet. Be the first to share something."}
         </div>
       ) : (
         <div className='space-y-5'>

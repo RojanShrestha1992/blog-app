@@ -11,7 +11,6 @@ const Login = ({ onLogin, onSuccess }) => {
     e.preventDefault();
     try{
         const {data} = await API.post("/auth/login", {email, password})
-        console.log("Login successful", data)
       onLogin(data)
       onSuccess?.("Login successful!")
       navigate("/")

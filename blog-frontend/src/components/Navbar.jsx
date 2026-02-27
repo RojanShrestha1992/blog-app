@@ -1,5 +1,5 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 const Navbar = ({ onNavClick, user, onLogout }) => {
   const navigate = useNavigate();
   return (
@@ -44,12 +44,14 @@ const Navbar = ({ onNavClick, user, onLogout }) => {
               >
                 Create Post
               </button>
-              <button
-                className="rounded-lg border border-indigo-300 bg-indigo-100/80 px-4 py-2 text-sm font-semibold text-indigo-700 transition hover:bg-indigo-100"
+              <Link
+                to={`/profile/${user._id}`}
+                className="hidden rounded-lg border border-indigo-300 bg-indigo-100/80 px-3 py-1.5 text-sm font-medium text-indigo-700 transition hover:bg-indigo-100 sm:inline-flex"
+                // className="rounded-lg border border-indigo-300 bg-indigo-100/80 px-4 py-2 text-sm font-semibold text-indigo-700 transition hover:bg-indigo-100"
                 onClick={() => onNavClick("profile")}
               >
-                My Posts
-              </button>
+                Profile
+              </Link>
               <button
                 onClick={onLogout}
                 className="rounded-lg px-3 py-1.5 text-sm font-medium text-rose-600 transition hover:bg-rose-50"

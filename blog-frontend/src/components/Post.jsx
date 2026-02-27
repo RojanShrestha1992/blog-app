@@ -1,23 +1,34 @@
 import React from "react";
 import API, { toggleUpvote } from "../api/api";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { BiUpvote } from "react-icons/bi";
 import { useEffect } from "react";
 import {toast} from "react-toastify"
+import { CiMenuKebab } from "react-icons/ci";
+
 
 const Post = ({ post, isOwner=false, refreshPosts, currentUserId }) => {
-  console.log("currentUserId in Post component:", currentUserId);
-  // console.log("Rendering Post component with post:", post);
   const navigate = useNavigate();
   const [postData, setPostData] = useState(post);
-  const [upvote, setUpvote] = useState(false);
+  const [isUpvoting, setIsUpvoting] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [isSharing, setIsSharing] = useState(false);
   const [comments, setComments] = useState([]);
   const [commentText, setCommentText] = useState("");
   const [showCommentBox, setShowCommentBox] = useState(false);
+  const [showMenu, setShowMenu] = useState(false);
   const authorName = postData.author?.name || "Unknown";
+  const authorId = postData.author?._id || postData.author;
+  const authorIdString = authorId?.toString();
+  const canManagePost =
+    isOwner ||
+    (!!currentUserId && authorIdString === currentUserId?.toString());
   const createdDate = new Date(postData.createdAt);
   const authorInitial = authorName.charAt(0).toUpperCase();
+  const hasUpvoted = (postData.upvotes || []).some(
+    (id) => id?.toString() === currentUserId?.toString()
+  );
 
   useEffect(() => {
     const fetchComments = async () => {
@@ -39,7 +50,6 @@ const Post = ({ post, isOwner=false, refreshPosts, currentUserId }) => {
     }
     try{
       if(!currentUserId){
-        // onSuccess?.("You must be logged in to comment.", "error")
         toast.error("You must be logged in to comment.")
 
         return;
@@ -50,7 +60,6 @@ const Post = ({ post, isOwner=false, refreshPosts, currentUserId }) => {
     })
     setComments((prev) => [res.data, ...prev]);
     setCommentText("");
-    // onSuccess?.("Comment posted successfully!")
     toast.success("Comment posted successfully!")
     }catch(err){
       console.error("Failed to submit comment", err);
@@ -60,13 +69,17 @@ const Post = ({ post, isOwner=false, refreshPosts, currentUserId }) => {
 
 
   const handleUpvote = async () => {
+    if (isUpvoting) {
+      return;
+    }
+
     try {
       if(!currentUserId){
-        // onSuccess?.("You must be logged in to upvote.", "error")
         toast.error("You must be logged in to upvote.")
 
         return;
       }
+      setIsUpvoting(true);
       const res = await toggleUpvote(postData.id || postData._id);
       setPostData((prev) => ({
         ...prev,
@@ -75,24 +88,63 @@ const Post = ({ post, isOwner=false, refreshPosts, currentUserId }) => {
       toast.success(res.data.upvoted ? "Post upvoted!" : "Upvote removed!")
     } catch (err) {
       console.error("Failed to toggle upvote", err);
+      toast.error("Failed to update upvote. Please try again.");
+    } finally {
+      setIsUpvoting(false);
     }
   };
 
   const handleDeletePost = async () => {
+    if (isDeleting) {
+      return;
+    }
+
     if(!window.confirm("Are you sure you want to delete this post?")){
       return;
     }
     try{
+      setIsDeleting(true);
       await API.delete(`/posts/${postData._id}`);
-      alert("Post deleted successfully");
+      toast.success("Post deleted successfully");
       if (typeof refreshPosts === "function") {
         refreshPosts(postData._id);
       }
     }catch(err){
       console.error("Failed to delete post", err);
-      alert("Failed to delete post. Please try agains.")
+      toast.error("Failed to delete post. Please try again.")
+    } finally {
+      setIsDeleting(false);
     }
   }
+
+  const handleSharePost = async () => {
+    if (isSharing) {
+      return;
+    }
+
+    const shareUrl = `${window.location.origin}/profile/${authorId}`;
+
+    try {
+      setIsSharing(true);
+      if (navigator.share) {
+        await navigator.share({
+          title: postData.title,
+          text: postData.content,
+          url: shareUrl,
+        });
+        toast.success("Shared successfully!");
+        return;
+      }
+
+      await navigator.clipboard.writeText(shareUrl);
+      toast.success("Profile link copied to clipboard!");
+    } catch (err) {
+      console.error("Failed to share post", err);
+      toast.error("Failed to share. Please try again.");
+    } finally {
+      setIsSharing(false);
+    }
+  };
 
   const handleUpdatePost = async (updatedPostData) => {
     navigate(`/update-post/${postData._id}`, { state: { post: updatedPostData } });
@@ -102,7 +154,6 @@ const Post = ({ post, isOwner=false, refreshPosts, currentUserId }) => {
   const formatTimeAgo = (date) => {
     const now = new Date();
     const seconds = Math.floor((now - date) / 1000);
-
     if (seconds < 60) return "Just now";
 
     const minutes = Math.floor(seconds / 60);
@@ -119,20 +170,68 @@ const Post = ({ post, isOwner=false, refreshPosts, currentUserId }) => {
 
   return (
     <article className="overflow-hidden rounded-3xl border border-indigo-200/90 bg-[#E7E7E7] shadow-md shadow-indigo-200/70 transition hover:-translate-y-0.5 hover:shadow-lg">
-      <header className="flex items-center gap-3 border-b border-indigo-100 px-5 py-4">
+      <header className="flex justify-between items-center gap-3 border-b border-indigo-100 px-5 py-4">
+        <div className="flex  gap-3">
+          <>
         <div className="flex h-10 w-10 items-center justify-center rounded-full bg-indigo-700 text-sm font-semibold text-white">
           {authorInitial}
         </div>
         <div className="min-w-0 flex-1">
-          <p className="truncate text-sm font-semibold text-indigo-950">
-            {authorName}
-          </p>
+          <Link to={`/profile/${authorId}`} className="truncate text-sm font-semibold text-indigo-950">
+          {authorName}
+          </Link>
           <p className="text-xs text-indigo-500">
             {formatTimeAgo(createdDate)}
             <span className="mx-1">•</span>
             {createdDate.toLocaleString()}
           </p>
         </div>
+        </>
+        </div>
+        <div className="relative">
+          {canManagePost && (
+            <>
+              <button
+                type="button"
+                onClick={() => setShowMenu((prev) => !prev)}
+                className="rounded-full p-1 transition duration-150 hover:bg-indigo-100 cursor-pointer text-black"
+              >
+                <CiMenuKebab className="w-5 h-5" />
+              </button>
+
+              <div
+                className={`${showMenu ? "flex" : "hidden"} absolute right-0 top-8 z-20 gap-2 rounded-lg border border-indigo-200 bg-white p-2 shadow-lg`}
+              >
+                <button
+                  type="button"
+                  disabled={isDeleting}
+                  className={`rounded px-3 py-1 text-sm font-medium text-white transition ${isDeleting ? "cursor-not-allowed bg-yellow-300" : "bg-yellow-400 hover:bg-yellow-500"}`}
+                  onClick={() => {
+                    setShowMenu(false);
+                    handleUpdatePost(postData._id);
+                  }}
+                >
+                  Update
+                </button>
+                <button
+                  type="button"
+                  disabled={isDeleting}
+                  className={`rounded px-3 py-1 text-sm font-medium text-white transition ${isDeleting ? "cursor-not-allowed bg-red-300" : "bg-red-500 hover:bg-red-600"}`}
+                  onClick={() => {
+                    handleDeletePost();
+                    setShowMenu(false);
+                  }}
+                >
+                  {isDeleting ? "Deleting..." : "Delete"}
+                </button>
+              </div>
+            </>
+          )}
+        </div>
+       
+
+
+
       </header>
 
       <div className="px-5 py-4">
@@ -178,17 +277,10 @@ const Post = ({ post, isOwner=false, refreshPosts, currentUserId }) => {
       <div className="flex items-center justify-between border-t border-indigo-100 px-5 py-3 text-sm text-indigo-600">
         <div className="flex items-center gap-4">
           <button
-            onClick={() => {
-              if (!currentUserId) {
-                toast.error("You must be logged in to upvote.");
-                return;
-              }
-              
-              handleUpvote();
-              setUpvote(!upvote);
-            }}
-             disabled={!currentUserId}
-            className={`font-medium flex items-center gap-1 transition  text-lg   hover:text-red-600 cursor-pointer ${upvote ? "text-red-600" : ""}`}
+            type="button"
+            onClick={handleUpvote}
+            disabled={!currentUserId || isUpvoting}
+            className={`rounded-full px-3 py-1.5 font-medium flex items-center gap-1.5 transition text-lg ${hasUpvoted ? "text-red-600" : "text-indigo-700"} ${!currentUserId || isUpvoting ? "cursor-not-allowed opacity-60" : "cursor-pointer hover:bg-indigo-100 hover:text-red-600"}`}
           >
             <BiUpvote />
             {(postData.upvotes || []).length}
@@ -197,26 +289,16 @@ const Post = ({ post, isOwner=false, refreshPosts, currentUserId }) => {
             💬 Comment
           </button>
         </div>
-        <button className="font-medium transition hover:text-indigo-900">
+        <button
+          type="button"
+          onClick={handleSharePost}
+          disabled={isSharing}
+          className={`rounded-full px-3 py-1.5 font-medium transition ${isSharing ? "cursor-not-allowed opacity-60" : "hover:bg-indigo-100 hover:text-indigo-900"}`}
+        >
           ↗ Share
         </button>
       </div>
-      {isOwner && (
-  <div className="flex gap-2 px-5 pb-3">
-    <button
-      className="rounded bg-yellow-400 px-3 py-1 text-sm font-medium text-white hover:bg-yellow-500 transition"
-      onClick={() => handleUpdatePost(postData._id)}
-    >
-      Update
-    </button>
-    <button
-      className="rounded bg-red-500 px-3 py-1 text-sm font-medium text-white hover:bg-red-600 transition"
-      onClick={handleDeletePost}
-    >
-      Delete
-    </button>
-  </div>
-)}
+
       <div className="px-5 py-4">
         <form onSubmit={handleCommentSubmit} className={`${showCommentBox ? "flex" : "hidden"} items-center gap-2`}>
           <input

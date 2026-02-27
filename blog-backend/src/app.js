@@ -5,6 +5,7 @@ const postRoutes = require('./routes/postRoutes')
 const cookieParser = require('cookie-parser')
 const imagekitRoutes = require('./routes/imageKitRoutes')
 const commentRoutes = require('./routes/commentRoutes')
+const userRoutes = require('./routes/userRoutes')
 const app = express();
 
 
@@ -26,4 +27,6 @@ app.use('/api/auth', authRoutes)
 app.use('/api/posts', postRoutes)
 app.use('/api/comments', commentRoutes)
 app.use('/api/imagekit', imagekitRoutes)
+
+app.use('/api/users', userRoutes)
 module.exports = app;
