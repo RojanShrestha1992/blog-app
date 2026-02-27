@@ -1,15 +1,14 @@
 import React from "react";
 import API, { toggleUpvote } from "../api/api";
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { BiUpvote } from "react-icons/bi";
 import { useEffect } from "react";
 import {toast} from "react-toastify"
 import { CiMenuKebab } from "react-icons/ci";
 
 
-const Post = ({ post, isOwner=false, refreshPosts, currentUserId }) => {
-  const navigate = useNavigate();
+const Post = ({ post, isOwner=false, refreshPosts, currentUserId, onEditPost }) => {
   const [postData, setPostData] = useState(post);
   const [isUpvoting, setIsUpvoting] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
@@ -19,6 +18,7 @@ const Post = ({ post, isOwner=false, refreshPosts, currentUserId }) => {
   const [showCommentBox, setShowCommentBox] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
   const authorName = postData.author?.name || "Unknown";
+  const authorAvatar = postData.author?.avatar || "";
   const authorId = postData.author?._id || postData.author;
   const authorIdString = authorId?.toString();
   const canManagePost =
@@ -146,8 +146,10 @@ const Post = ({ post, isOwner=false, refreshPosts, currentUserId }) => {
     }
   };
 
-  const handleUpdatePost = async (updatedPostData) => {
-    navigate(`/update-post/${postData._id}`, { state: { post: updatedPostData } });
+  const handleUpdatePost = () => {
+    if (typeof onEditPost === "function") {
+      onEditPost(postData);
+    }
   }
 
 
@@ -173,9 +175,17 @@ const Post = ({ post, isOwner=false, refreshPosts, currentUserId }) => {
       <header className="flex justify-between items-center gap-3 border-b border-indigo-100 px-5 py-4">
         <div className="flex  gap-3">
           <>
-        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-indigo-700 text-sm font-semibold text-white">
-          {authorInitial}
-        </div>
+        {authorAvatar ? (
+          <img
+            src={authorAvatar}
+            alt={authorName}
+            className="h-10 w-10 rounded-full object-cover ring-1 ring-indigo-200"
+          />
+        ) : (
+          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-indigo-700 text-sm font-semibold text-white">
+            {authorInitial}
+          </div>
+        )}
         <div className="min-w-0 flex-1">
           <Link to={`/profile/${authorId}`} className="truncate text-sm font-semibold text-indigo-950">
           {authorName}
@@ -208,7 +218,7 @@ const Post = ({ post, isOwner=false, refreshPosts, currentUserId }) => {
                   className={`rounded px-3 py-1 text-sm font-medium text-white transition ${isDeleting ? "cursor-not-allowed bg-yellow-300" : "bg-indigo-600 hover:bg-indigo-700"}`}
                   onClick={() => {
                     setShowMenu(false);
-                    handleUpdatePost(postData._id);
+                    handleUpdatePost();
                   }}
                 >
                   Update
@@ -324,9 +334,24 @@ const Post = ({ post, isOwner=false, refreshPosts, currentUserId }) => {
           {
             comments.map((comment) => (
               <div key={comment._id} className="border border-indigo-100 rounded-lg px-4 py-2">
-               <Link to={`/profile/${comment.user?._id}`} className="text-sm font-semibold text-indigo-900">{comment.user?.name || "Unknown"}</Link>
-                <p className="text-sm text-indigo-700">{comment.text}</p>
-                <p className="text-xs text-indigo-500">{formatTimeAgo(new Date(comment.createdAt))}</p>
+                <div className="flex items-start gap-2">
+                  {comment.user?.avatar ? (
+                    <img
+                      src={comment.user.avatar}
+                      alt={comment.user?.name || "Unknown"}
+                      className="h-8 w-8 rounded-full object-cover ring-1 ring-indigo-200"
+                    />
+                  ) : (
+                    <div className="flex h-8 w-8 items-center justify-center rounded-full bg-indigo-700 text-xs font-semibold text-white">
+                      {(comment.user?.name || "U").charAt(0).toUpperCase()}
+                    </div>
+                  )}
+                  <div className="min-w-0 flex-1">
+                    <Link to={`/profile/${comment.user?._id}`} className="text-sm font-semibold text-indigo-900">{comment.user?.name || "Unknown"}</Link>
+                    <p className="text-sm text-indigo-700">{comment.text}</p>
+                    <p className="text-xs text-indigo-500">{formatTimeAgo(new Date(comment.createdAt))}</p>
+                  </div>
+                </div>
               </div>
              )
             )

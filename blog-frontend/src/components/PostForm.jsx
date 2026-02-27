@@ -1,19 +1,57 @@
 import React, { useState } from "react";
-import { createPost } from "../api/api";
+import { createPost, updatePost } from "../api/api";
+import { useEffect } from "react";
 
-const PostForm = ({ onPostCreated }) => {
+const PostForm = ({ onPostCreated, mode = "create", initialPost = null }) => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [file, setFile] = useState(null);
-
   const [tags, setTags] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-    const handleSubmit = async (e) => {
+  const isEditMode = mode === "edit" && Boolean(initialPost?._id);
+
+  useEffect(() => {
+    if (isEditMode) {
+      setTitle(initialPost?.title || "");
+      setContent(initialPost?.content || "");
+      setTags(Array.isArray(initialPost?.tags) ? initialPost.tags.join(" ") : "");
+      setFile(null);
+      return;
+    }
+
+    setTitle("");
+    setContent("");
+    setTags("");
+    setFile(null);
+  }, [initialPost, isEditMode]);
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-        const tagArray = tags.split(" ").filter(tag => tag.trim() !== "")
+    if (isSubmitting) {
+      return;
+    }
 
-    try{
+    const tagArray = tags.split(" ").filter((tag) => tag.trim() !== "");
+
+    try {
+      setIsSubmitting(true);
+
+      if (isEditMode) {
+        const formData = new FormData();
+        formData.append("title", title);
+        formData.append("content", content);
+        formData.append("tags", JSON.stringify(tagArray));
+        if (file) {
+          formData.append("media", file);
+        }
+
+        const response = await updatePost(initialPost._id, formData);
+        onPostCreated(response.data);
+        return;
+      }
+
       const formData = new FormData();
       formData.append("title", title);
       formData.append("content", content);
@@ -22,26 +60,20 @@ const PostForm = ({ onPostCreated }) => {
         formData.append("media", file);
       }
 
-      await createPost(formData)
+      await createPost(formData);
 
-        //reset form
-        setTitle("")
-        setContent("")
-        setTags("")
-        setFile(null)
+      setTitle("");
+      setContent("");
+      setTags("");
+      setFile(null);
 
-        //notify parent to refresh post list
-        onPostCreated()
-    }catch(err){
-        console.error("Failed to create post", err)
+      onPostCreated();
+    } catch (err) {
+      console.error(`Failed to ${isEditMode ? "update" : "create"} post`, err);
+    } finally {
+      setIsSubmitting(false);
     }
-
-
-    }
-
-
-
-
+  }
   return (
     <form className="space-y-5 " onSubmit={handleSubmit}>
       <div>
@@ -87,7 +119,7 @@ const PostForm = ({ onPostCreated }) => {
       </div>
 
       <button type="submit" className="inline-flex rounded-2xl bg-indigo-600 px-5 py-3 font-semibold text-white shadow-sm shadow-indigo-200 transition hover:bg-indigo-700">
-        Publish Post
+        {isSubmitting ? (isEditMode ? "Updating..." : "Publishing...") : isEditMode ? "Update Post" : "Publish Post"}
       </button>
     </form>
   );

@@ -16,7 +16,7 @@ const createComment = async (req, res)=> {
             user: req.user._id,
             text
          })
-        const populatedComment = await Comment.findById(comment._id).populate('user', 'name email');
+        const populatedComment = await Comment.findById(comment._id).populate('user', 'name email avatar');
         res.status(201).json(populatedComment)
     } catch (error) {
         res.status(500).json({message: error.message})
@@ -30,7 +30,7 @@ const createComment = async (req, res)=> {
 // get comments for a post
 const getCommentsByPostId = async (req, res) => {
     try{
-        const comments = await Comment.find({post: req.params.postId}).populate('user', 'name email').sort({createdAt: -1});
+        const comments = await Comment.find({post: req.params.postId}).populate('user', 'name email avatar').sort({createdAt: -1});
         res.json(comments)
     }catch (error) {
         res.status(500).json({message: error.message})

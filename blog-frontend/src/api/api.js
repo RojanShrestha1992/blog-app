@@ -27,11 +27,22 @@ export const createPost = (postData) => {
   }
   return API.post("/posts", postData);
 };
-export const updatePost = (id, postData) => API.put(`/posts/${id}`, postData);
+export const updatePost = (id, postData) => {
+  if (postData instanceof FormData) {
+    return API.put(`/posts/${id}`, postData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
+  }
+  return API.put(`/posts/${id}`, postData);
+};
 export const deletePost = (id) => API.delete(`/posts/${id}`);
 
 export const toggleUpvote = (id) => API.put(`/posts/${id}/upvote`);
 
 export const fetchProfile = (userId) => API.get(`/users/${userId}`)
+export const uploadAvatar = (formData) =>
+  API.put("/users/avatar", formData, {
+    headers: { "Content-Type": "multipart/form-data" },
+  });
 
 export default API;

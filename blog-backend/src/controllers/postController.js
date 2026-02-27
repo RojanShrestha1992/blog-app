@@ -57,7 +57,7 @@ const createPost = async (req, res) => {
 
 const getPosts = async (req, res) => {
   const posts = await Post.find()
-    .populate("author", "name email")
+    .populate("author", "name email avatar")
     .sort({ createdAt: -1 });
   res.json(posts);
 };
@@ -65,7 +65,7 @@ const getPosts = async (req, res) => {
 const getPostById = async (req, res) => {
   const post = await Post.findById(req.params.id).populate(
     "author",
-    "name email",
+    "name email avatar",
   );
   if (!post) {
     return res.status(404).json({ message: "Post not found" });
@@ -74,21 +74,55 @@ const getPostById = async (req, res) => {
 };
 
 const updatePost = async (req, res) => {
-  const post = await Post.findById(req.params.id);
-  if (!post) {
-    return res.status(404).json({ message: "Post not found" });
-  }
-  // check if current user is the author of the post
-  if (post.author.toString() !== req.user._id.toString()) {
-    return res.status(401).json({ message: "Not authorized" });
-  }
+  try {
+    const post = await Post.findById(req.params.id);
+    if (!post) {
+      return res.status(404).json({ message: "Post not found" });
+    }
 
-  post.title = req.body.title || post.title;
-  post.content = req.body.content || post.content;
-  post.tags = req.body.tags || post.tags;
+    if (post.author.toString() !== req.user._id.toString()) {
+      return res.status(401).json({ message: "Not authorized" });
+    }
 
-  const updatedPost = await post.save();
-  res.json(updatedPost);
+    let parsedTags = post.tags || [];
+    if (Array.isArray(req.body.tags)) {
+      parsedTags = req.body.tags;
+    } else if (typeof req.body.tags === "string") {
+      const incomingTags = req.body.tags.trim();
+      if (incomingTags) {
+        try {
+          const jsonTags = JSON.parse(incomingTags);
+          parsedTags = Array.isArray(jsonTags)
+            ? jsonTags
+            : incomingTags.split(" ").filter((tag) => tag.trim() !== "");
+        } catch {
+          parsedTags = incomingTags
+            .split(" ")
+            .filter((tag) => tag.trim() !== "");
+        }
+      } else {
+        parsedTags = [];
+      }
+    }
+
+    post.title = req.body.title || post.title;
+    post.content = req.body.content || post.content;
+    post.tags = parsedTags;
+
+    if (req.file) {
+      const uploadedFile = await imagekit.upload({
+        file: req.file.buffer,
+        fileName: req.file.originalname,
+      });
+      post.media = uploadedFile.url;
+    }
+
+    const updatedPost = await post.save();
+    res.json(updatedPost);
+  } catch (err) {
+    console.error("Failed to update post", err);
+    res.status(500).json({ message: "Server error" });
+  }
 };
 
 const deletePost = async (req, res) => {

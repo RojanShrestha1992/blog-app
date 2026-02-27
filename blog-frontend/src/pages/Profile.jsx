@@ -1,14 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import API, { fetchProfile, getCurrentUser } from "../api/api";
+import API, { fetchProfile, getCurrentUser, uploadAvatar } from "../api/api";
 import Navbar from "../components/Navbar";
 import Post from "../components/Post";
+import { toast } from "react-toastify";
 
 const Profile = ({ loggedInUser: appUser, onLogout }) => {
   const { userId } = useParams();
   const navigate = useNavigate();
   const [loggedInUser, setLoggedInUser] = useState(null);
   const [profileData, setProfileData] = useState(null);
+  const [isUploadingAvatar, setIsUploadingAvatar] = useState(false);
 
   useEffect(() => {
     const loadProfile = async () => {
@@ -66,6 +68,50 @@ const Profile = ({ loggedInUser: appUser, onLogout }) => {
   };
 
   const { user, posts = [], stats } = profileData || {};
+  const isOwnProfile =
+    user?._id?.toString() === loggedInUser?._id?.toString();
+
+  const handleAvatarUpload = async (e) => {
+    const selectedFile = e.target.files?.[0];
+    if (!selectedFile) {
+      return;
+    }
+
+    try {
+      setIsUploadingAvatar(true);
+      const formData = new FormData();
+      formData.append("avatar", selectedFile);
+      const { data } = await uploadAvatar(formData);
+
+      setProfileData((prev) => {
+        if (!prev) return prev;
+        return {
+          ...prev,
+          user: {
+            ...prev.user,
+            avatar: data.avatar,
+          },
+        };
+      });
+
+      setLoggedInUser((prev) => {
+        if (!prev) return prev;
+        return {
+          ...prev,
+          avatar: data.avatar,
+        };
+      });
+
+      toast.success("Profile picture updated");
+    } catch (err) {
+      console.error("Failed to upload avatar", err);
+      toast.error("Failed to upload profile picture");
+    } finally {
+      setIsUploadingAvatar(false);
+      e.target.value = "";
+    }
+  };
+
   return (
     <div className="min-h-screen bg-linear-to-br from-indigo-50 via-white to-indigo-100 pb-10">
       <Navbar onNavClick={handleNavClick} user={loggedInUser} onLogout={handleLogout} />
@@ -74,9 +120,32 @@ const Profile = ({ loggedInUser: appUser, onLogout }) => {
 
       <div className="max-w-4xl mx-auto px-6">
         <div className="relative -mt-16 bg-white rounded-3xl shadow-xl p-6 text-center">
-          <div className="mx-auto h-24 w-24 rounded-full bg-indigo-600 flex items-center justify-center text-white text-3xl font-bold shadow-lg ring-4 ring-white">
-            {user?.name?.charAt(0).toUpperCase()}
-          </div>
+          {user?.avatar ? (
+            <img
+              src={user.avatar}
+              alt={user?.name || "Profile"}
+              className="mx-auto h-24 w-24 rounded-full object-cover shadow-lg ring-4 ring-white"
+            />
+          ) : (
+            <div className="mx-auto h-24 w-24 rounded-full bg-indigo-600 flex items-center justify-center text-white text-3xl font-bold shadow-lg ring-4 ring-white">
+              {user?.name?.charAt(0).toUpperCase()}
+            </div>
+          )}
+
+          {isOwnProfile && (
+            <div className="mt-3">
+              <label className="inline-flex cursor-pointer items-center rounded-lg border border-indigo-300 bg-indigo-50 px-3 py-1.5 text-sm font-medium text-indigo-700 transition hover:bg-indigo-100">
+                {isUploadingAvatar ? "Uploading..." : "Change photo"}
+                <input
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  disabled={isUploadingAvatar}
+                  onChange={handleAvatarUpload}
+                />
+              </label>
+            </div>
+          )}
 
           <h1 className="mt-4 text-2xl font-bold text-gray-800">{user?.name}</h1>
           <p className="text-sm text-gray-500">{user?.email}</p>

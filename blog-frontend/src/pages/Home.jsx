@@ -10,6 +10,8 @@ const Home = ({ loggedInUser, onLogout }) => {
   const [refresh, setRefresh] = useState(false);
   const [currentView, setCurrentView] = useState("all");
   const [showModal, setShowModal] = useState(false);
+  const [modalMode, setModalMode] = useState("create");
+  const [editingPost, setEditingPost] = useState(null);
   const location = useLocation();
   const navigate = useNavigate();
   const loggedInUserId = loggedInUser?._id ?? null;
@@ -23,12 +25,26 @@ const Home = ({ loggedInUser, onLogout }) => {
 
   const handleNavClick = (view) => {
     if (view === "create") {
+      setModalMode("create");
+      setEditingPost(null);
       setShowModal(true);
     } else {
       setCurrentView(view);
     }
   };
-  const closeModal = () => setShowModal(false);
+  const handleEditPost = (post) => {
+    setEditingPost(post);
+    setModalMode("edit");
+    setShowModal(true);
+  };
+
+  const closeModal = () => {
+    setShowModal(false);
+    setEditingPost(null);
+    setModalMode("create");
+  };
+
+  const isEditMode = modalMode === "edit" && Boolean(editingPost?._id);
   return (
     <div className="min-h-screen bg-transparent">
       <Navbar onNavClick={handleNavClick} user={loggedInUser} onLogout={onLogout} />
@@ -43,14 +59,24 @@ const Home = ({ loggedInUser, onLogout }) => {
             >
               ×
             </button>
-            <h2 className="mb-1 text-2xl font-bold text-indigo-950">Create a new post</h2>
-            <p className="mb-5 text-sm leading-6 text-indigo-600">Write your title, content, and tags to publish instantly.</p>
+            <h2 className="mb-1 text-2xl font-bold text-indigo-950">
+              {isEditMode ? "Update post" : "Create a new post"}
+            </h2>
+            <p className="mb-5 text-sm leading-6 text-indigo-600">
+              {isEditMode
+                ? "Edit your title, content, media, and tags to save changes."
+                : "Write your title, content, and tags to publish instantly."}
+            </p>
             <div className="min-h-0 flex-1 overflow-y-auto pr-1">
-              <PostForm
+              <PostForm 
+                mode={isEditMode ? "edit" : "create"}
+                initialPost={editingPost}
                 onPostCreated={() => {
                   setShowModal(false);
+                  setEditingPost(null);
+                  setModalMode("create");
                   setRefresh(!refresh);
-                  toast.success("Post created successfully!");
+                  toast.success(isEditMode ? "Post updated successfully!" : "Post created successfully!");
                 }}
               />
             </div>
@@ -65,6 +91,7 @@ const Home = ({ loggedInUser, onLogout }) => {
           key={refresh + "-all"}
           currentUserId={loggedInUserId}
           filterByUser={null}
+          onEditPost={handleEditPost}
         />
       )}
       {currentView === "profile" && (
@@ -72,6 +99,7 @@ const Home = ({ loggedInUser, onLogout }) => {
           key={refresh + "-profile"}
           currentUserId={loggedInUserId}
           filterByUser={loggedInUserId}
+          onEditPost={handleEditPost}
         />
       )}
 
