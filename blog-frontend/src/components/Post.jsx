@@ -200,12 +200,12 @@ const Post = ({ post, isOwner=false, refreshPosts, currentUserId }) => {
               </button>
 
               <div
-                className={`${showMenu ? "flex" : "hidden"} absolute right-0 top-8 z-20 gap-2 rounded-lg border border-indigo-200 bg-white p-2 shadow-lg`}
+                className={`${showMenu ? "flex" : "hidden"} flex-col transition duration-200 absolute right-0 top-8 z-20 gap-2 rounded-lg border border-indigo-200 bg-white p-2 shadow-lg`}
               >
                 <button
                   type="button"
                   disabled={isDeleting}
-                  className={`rounded px-3 py-1 text-sm font-medium text-white transition ${isDeleting ? "cursor-not-allowed bg-yellow-300" : "bg-yellow-400 hover:bg-yellow-500"}`}
+                  className={`rounded px-3 py-1 text-sm font-medium text-white transition ${isDeleting ? "cursor-not-allowed bg-yellow-300" : "bg-indigo-600 hover:bg-indigo-700"}`}
                   onClick={() => {
                     setShowMenu(false);
                     handleUpdatePost(postData._id);
@@ -324,7 +324,7 @@ const Post = ({ post, isOwner=false, refreshPosts, currentUserId }) => {
           {
             comments.map((comment) => (
               <div key={comment._id} className="border border-indigo-100 rounded-lg px-4 py-2">
-                <p className="text-sm font-semibold text-indigo-900">{comment.user?.name || "Unknown"}</p>
+               <Link to={`/profile/${comment.user?._id}`} className="text-sm font-semibold text-indigo-900">{comment.user?.name || "Unknown"}</Link>
                 <p className="text-sm text-indigo-700">{comment.text}</p>
                 <p className="text-xs text-indigo-500">{formatTimeAgo(new Date(comment.createdAt))}</p>
               </div>

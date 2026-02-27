@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import API from "../api/api";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
-const Login = ({ onLogin, onSuccess }) => {
+const Login = ({ onLogin }) => {
   const navigate = useNavigate()
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -12,12 +13,12 @@ const Login = ({ onLogin, onSuccess }) => {
     try{
         const {data} = await API.post("/auth/login", {email, password})
       onLogin(data)
-      onSuccess?.("Login successful!")
+      toast.success("Login successful!")
       navigate("/")
     }
     catch(err){
-      onSuccess?.("Login failed. Please check your credentials.")
         console.error("Login failed", err)
+        toast.error("Login failed. Please check your credentials.")
     }
 
   }

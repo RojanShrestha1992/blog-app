@@ -43,7 +43,7 @@ const PostForm = ({ onPostCreated }) => {
 
 
   return (
-    <form className="space-y-5" onSubmit={handleSubmit}>
+    <form className="space-y-5 " onSubmit={handleSubmit}>
       <div>
         <label className="mb-2 block text-sm font-medium text-indigo-800">Title</label>
         <input

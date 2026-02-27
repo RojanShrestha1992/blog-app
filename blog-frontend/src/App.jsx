@@ -53,7 +53,7 @@ const handleLogout = async () => {
         
         <ToastContainer position="top-right" autoClose={2500} hideProgressBar={false} closeOnClick pauseOnHover newestOnTop draggable={false} />
         <Routes>
-        <Route path="/profile/:userId" element={<Profile />} />
+        <Route path="/profile/:userId" element={<Profile loggedInUser={user} onLogout={handleLogout} />} />
           <Route path="/" element={<Home loggedInUser={user} onLogout={handleLogout} onSuccess={showToast} />} />
           <Route path="/login" element={<Login onLogin={setUser} onSuccess={showToast} />} /> 
           <Route path="/register" element={<Register onRegister={setUser} onSuccess={showToast} />} />

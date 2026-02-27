@@ -1,13 +1,25 @@
 import React, { useState } from "react";
+import { useEffect } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import PostList from "../components/PostList";
 import PostForm from "../components/PostForm";
 import Navbar from "../components/Navbar";
+import { toast } from "react-toastify";
 
-const Home = ({ loggedInUser, onLogout, onSuccess }) => {
+const Home = ({ loggedInUser, onLogout }) => {
   const [refresh, setRefresh] = useState(false);
   const [currentView, setCurrentView] = useState("all");
   const [showModal, setShowModal] = useState(false);
+  const location = useLocation();
+  const navigate = useNavigate();
   const loggedInUserId = loggedInUser?._id ?? null;
+
+  useEffect(() => {
+    if (location.state?.openCreateModal) {
+      setTimeout(() => setShowModal(true), 0);
+      navigate(location.pathname, { replace: true, state: {} });
+    }
+  }, [location.pathname, location.state, navigate]);
 
   const handleNavClick = (view) => {
     if (view === "create") {
@@ -24,7 +36,7 @@ const Home = ({ loggedInUser, onLogout, onSuccess }) => {
       {/* modal for creating post */}
       {showModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-indigo-950/55 p-4 backdrop-blur-md">
-          <div className="relative w-full max-w-2xl rounded-3xl border border-indigo-200/90 bg-indigo-50/95 p-6 shadow-2xl shadow-indigo-300/50">
+          <div className="relative my-auto flex max-h-[calc(100vh-2rem)] w-full max-w-2xl flex-col overflow-hidden rounded-3xl border border-indigo-200/90 bg-indigo-50/95 p-6 shadow-2xl shadow-indigo-300/50">
             <button
               className="absolute right-4 top-4 rounded-lg px-2 py-1 text-2xl leading-none text-indigo-400 transition hover:bg-indigo-50 hover:text-indigo-700"
               onClick={closeModal}
@@ -33,19 +45,19 @@ const Home = ({ loggedInUser, onLogout, onSuccess }) => {
             </button>
             <h2 className="mb-1 text-2xl font-bold text-indigo-950">Create a new post</h2>
             <p className="mb-5 text-sm leading-6 text-indigo-600">Write your title, content, and tags to publish instantly.</p>
-            <PostForm
-              onPostCreated={() => {
-                // closeModal();
-                setShowModal(false);
-                setRefresh(!refresh);
-                onSuccess?.("Post created successfully!");
-              }}
-            />
+            <div className="min-h-0 flex-1 overflow-y-auto pr-1">
+              <PostForm
+                onPostCreated={() => {
+                  setShowModal(false);
+                  setRefresh(!refresh);
+                  toast.success("Post created successfully!");
+                }}
+              />
+            </div>
           </div>
         </div>
       )}
 
-      {/* <PostForm onPostCreated={()=> setRefresh(!refresh)}/> */}
 
       {/* Views */}
       {currentView === "all" && (
@@ -53,7 +65,6 @@ const Home = ({ loggedInUser, onLogout, onSuccess }) => {
           key={refresh + "-all"}
           currentUserId={loggedInUserId}
           filterByUser={null}
-          onSuccess={onSuccess}
         />
       )}
       {currentView === "profile" && (
@@ -61,11 +72,9 @@ const Home = ({ loggedInUser, onLogout, onSuccess }) => {
           key={refresh + "-profile"}
           currentUserId={loggedInUserId}
           filterByUser={loggedInUserId}
-          onSuccess={onSuccess}
         />
       )}
 
-      {/* <PostList key={refresh}/> */}
     </div>
   );
 };

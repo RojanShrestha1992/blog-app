@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import API from "../api/api";
+import { toast } from "react-toastify";
 
-const Register = ({ onRegister, onSuccess }) => {
+const Register = ({ onRegister }) => {
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -21,12 +22,12 @@ const Register = ({ onRegister, onSuccess }) => {
                 { withCredentials: true }
             );
             onRegister(data.user);
-            onSuccess?.("Registration successful!");
+            toast.success("Registration successful!")
             navigate("/");
         } catch (err) {
             console.error("Registration failed", err);
             setError(err?.response?.data?.message || "Registration failed. Please try again.");
-            onSuccess?.("Registration failed. Please try again.");
+            toast.error("Registration failed. Please try again.");
         } finally {
             setLoading(false);
         }
