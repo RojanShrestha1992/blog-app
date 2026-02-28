@@ -47,7 +47,7 @@ const Navbar = ({ onNavClick, user, onLogout }) => {
               </button>
               <Link
                 to={`/profile/${user._id}`}
-                className="hidden rounded-lg border border-indigo-300 bg-indigo-100/80 px-3 py-1.5 text-sm font-medium text-indigo-700 transition hover:bg-indigo-100 sm:inline-flex"
+                className="inline-flex rounded-lg border border-indigo-300 bg-indigo-100/80 px-3 py-1.5 text-sm font-medium text-indigo-700 transition hover:bg-indigo-100"
                 // className="rounded-lg border border-indigo-300 bg-indigo-100/80 px-4 py-2 text-sm font-semibold text-indigo-700 transition hover:bg-indigo-100"
                 onClick={() => onNavClick("profile")}
               >
