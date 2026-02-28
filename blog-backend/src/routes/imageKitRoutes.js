@@ -1,5 +1,5 @@
 const express = require('express');
-const imagekit = require("../utils/ImageKit");
+const imagekit = require("../utils/imagekit");
 const router = express.Router();
 
 router.get('/auth', (req, res) => {

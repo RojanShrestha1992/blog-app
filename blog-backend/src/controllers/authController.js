@@ -8,8 +8,8 @@ const generateToken = (id) => {
 
 const cookieOptions = {
     httpOnly: true,
-    sameSite: 'lax',
-    secure: false,
+    sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+    secure: process.env.NODE_ENV === 'production',
     path: '/'
 }
 

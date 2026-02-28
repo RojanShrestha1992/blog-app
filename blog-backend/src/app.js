@@ -8,16 +8,20 @@ const commentRoutes = require('./routes/commentRoutes')
 const userRoutes = require('./routes/userRoutes')
 const app = express();
 
+const allowedOrigins = [
+    'http://localhost:3000',
+    'http://localhost:5173',
+    process.env.FRONTEND_URL,
+].filter(Boolean)
 
 // Middleware to parse JSON bodies
 app.use(express.json());
 app.use(cors({
-    origin: ['http://localhost:3000', 'http://localhost:5173'], // Frontend URL
+    origin: allowedOrigins,
     credentials: true, // to allow cookies to be sent
 }))
 app.use(cookieParser())
 
-app.use('/api/imagekit', imagekitRoutes)
 // app.get('/', (req, res) => {
 //     res.send('Hello World!');
 // });
