@@ -1,5 +1,4 @@
 const express = require('express');
-const imagekit = require("../utils/ImageKit");
 const router = express.Router();
 const {registerUser, loginUser, getMe, logoutUser} = require('../controllers/authController');
 const { protect } = require('../middleware/authMiddleware');

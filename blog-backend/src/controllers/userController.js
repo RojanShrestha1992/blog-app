@@ -1,7 +1,7 @@
 const User = require('../models/User');
 const Post = require('../models/Post');
 // const imagekit = require('../utils/imagekit');
-const imagekit = require("../utils/ImageKit");
+const imagekit = require("../utils/imagekit");
 
 const getUserProfile = async (req, res) => {
     try{

@@ -26,6 +26,14 @@ app.use(cookieParser())
 //     res.send('Hello World!');
 // });
 
+app.get('/', (req, res) => {
+    res.status(200).json({ message: 'Backend is running' });
+});
+
+app.get('/api', (req, res) => {
+    res.status(200).json({ message: 'API is running' });
+});
+
 //routes
 app.use('/api/auth', authRoutes)
 app.use('/api/posts', postRoutes)

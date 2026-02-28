@@ -1,5 +1,5 @@
 const Post = require("../models/Post");
-const imagekit = require("../utils/ImageKit");
+const imagekit = require("../utils/imagekit");
 
 // @desc Create a new post
 // @route POST /api/posts
