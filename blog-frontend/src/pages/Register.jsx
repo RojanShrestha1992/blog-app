@@ -38,7 +38,7 @@ const Register = ({ onRegister }) => {
             <div className="mx-auto max-w-5xl overflow-hidden rounded-3xl border border-indigo-200/90 bg-indigo-50/90 shadow-2xl shadow-indigo-300/60 backdrop-blur-sm lg:grid lg:grid-cols-2">
                 <section className="hidden rounded-l-3xl bg-indigo-900 p-10 text-indigo-50 lg:flex lg:flex-col lg:justify-between">
                     <div>
-                        <p className="text-sm font-semibold uppercase tracking-[0.22em] text-indigo-200">Blog App</p>
+                        <p className="text-sm font-semibold uppercase tracking-[0.22em] text-indigo-200">BlogSpace</p>
                         <h1 className="mt-6 text-4xl font-bold leading-tight">Create your account and start publishing today.</h1>
                         <p className="mt-4 text-indigo-200">Join the writing space where your posts stay organized and easy to share.</p>
                     </div>

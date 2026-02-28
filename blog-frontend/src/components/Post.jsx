@@ -270,6 +270,7 @@ const Post = ({ post, isOwner=false, refreshPosts, currentUserId, onEditPost }) 
           {postData.media.match(/\.(mp4|webm|ogg)$/i) ? (
             <video
               controls
+              autoPlay={true}
               className="mt-2 max-h-115 w-full rounded-2xl object-cover ring-1 ring-indigo-100"
             >
               <source src={postData.media} />
