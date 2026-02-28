@@ -21,13 +21,14 @@ const Register = ({ onRegister }) => {
                 { name, email, password },
                 { withCredentials: true }
             );
-            onRegister(data.user);
-            toast.success("Registration successful!")
+            onRegister(data);
+            toast.success(data?.message || "Registration successful!")
             navigate("/");
         } catch (err) {
             console.error("Registration failed", err);
-            setError(err?.response?.data?.message || "Registration failed. Please try again.");
-            toast.error("Registration failed. Please try again.");
+            const message = err?.response?.data?.message || "Registration failed. Please try again."
+            setError(message);
+            toast.error(message);
         } finally {
             setLoading(false);
         }
