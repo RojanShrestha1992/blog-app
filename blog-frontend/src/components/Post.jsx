@@ -34,9 +34,10 @@ const Post = ({ post, isOwner=false, refreshPosts, currentUserId, onEditPost }) 
     const fetchComments = async () => {
       try {
         const res = await API.get(`/comments/${postData._id}`);
-        setComments(res.data);
+        setComments(Array.isArray(res.data) ? res.data : []);
       } catch (err) {
         console.error("Failed to fetch comments", err);
+        setComments([]);
       }
     };
     fetchComments();

@@ -19,14 +19,20 @@ const PostList = ({ filterByUser, currentUserId, onEditPost }) => {
     const loadPosts = async () =>{
       try{
         const {data} = await fetchPosts()
+        const safePosts = Array.isArray(data) ? data : []
         if(filterByUser){
-          setPosts(data.filter((post)=> post.author?._id.toString() === filterByUser.toString()))
+          setPosts(
+            safePosts.filter(
+              (post) => post?.author?._id?.toString() === filterByUser?.toString()
+            )
+          )
         }else{
 
-          setPosts(data)
+          setPosts(safePosts)
         }
       }catch(err){
         console.error("Failed to fetch posts", err)
+        setPosts([])
       }
     }
     loadPosts()
