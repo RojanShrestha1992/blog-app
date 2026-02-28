@@ -1,13 +1,13 @@
 import axios from "axios";
 
 const API = axios.create({
-  baseURL: "http://localhost:3000/api",
+  baseURL: import.meta.env.VITE_REACT_APP_BACKEND_BASEURL || "http://localhost:3000/api",
   withCredentials: true, // to send cookies with requests
 });
 
 export const getCurrentUser = async () => {
   try {
-    const { data } = await axios.get("http://localhost:3000/api/auth/me", {
+    const { data } = await axios.get(`${API.defaults.baseURL}/auth/me`, {
       withCredentials: true,
     });
     return data; // _id name emails
