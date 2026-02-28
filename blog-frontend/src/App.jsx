@@ -16,12 +16,18 @@ const App = () => {
   const [user, setUser] = useState(null)
   const [toast, setToast] = useState({ message: '', type: 'success' })
 
+  const isValidUser = (candidate) => {
+    return Boolean(candidate && typeof candidate === "object" && candidate._id)
+  }
+
   useEffect(()=>{
     const fetchUser = async () => {
 
       const loggedInUser = await getCurrentUser()
-      if (loggedInUser){
+      if (isValidUser(loggedInUser)){
         setUser(loggedInUser)
+      } else {
+        setUser(null)
       }
     }
     fetchUser()
@@ -43,9 +49,14 @@ const App = () => {
   }
   
 const handleLogout = async () => {
-  await API.post("/auth/logout", {}, { withCredentials: true }); // clear token
-  setUser(null);
-  showToast('Logout successful!');
+  try {
+    await API.post("/auth/logout", {}, { withCredentials: true });
+  } catch (err) {
+    console.error("Logout failed", err)
+  } finally {
+    setUser(null);
+    showToast('Logout successful!');
+  }
 };
 
   return (

@@ -2,6 +2,7 @@ import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 const Navbar = ({ onNavClick, user, onLogout }) => {
   const navigate = useNavigate();
+  const isAuthenticated = Boolean(user && user._id)
   return (
     <header className="sticky top-0 z-30 border-b border-indigo-200/80 bg-indigo-50/80 shadow-sm shadow-indigo-200/70 backdrop-blur-xl">
       <nav className="mx-auto flex w-full max-w-6xl items-center justify-between px-4 py-4 sm:px-6">
@@ -21,7 +22,7 @@ const Navbar = ({ onNavClick, user, onLogout }) => {
         </div>
 
         <div className="flex items-center gap-2 sm:gap-3">
-          {!user ? (
+          {!isAuthenticated ? (
             <>
               <button
                 onClick={() => navigate("/login")}
