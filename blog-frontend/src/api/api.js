@@ -17,7 +17,7 @@ export const getCurrentUser = async () => {
   }
 };
 
-export const fetchPosts = () => API.get("/posts");
+export const fetchPosts = (params = {}) => API.get("/posts", { params });
 export const fetchPostById = (id) => API.get(`/posts/${id}`);
 export const createPost = (postData) => {
   if (postData instanceof FormData) {

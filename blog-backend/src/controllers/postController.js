@@ -56,10 +56,42 @@ const createPost = async (req, res) => {
 };
 
 const getPosts = async (req, res) => {
-  const posts = await Post.find()
-    .populate("author", "name email avatar")
-    .sort({ createdAt: -1 });
-  res.json(posts);
+  try {
+    const page = Math.max(Number.parseInt(req.query.page, 10) || 1, 1);
+    const limit = Math.min(
+      Math.max(Number.parseInt(req.query.limit, 10) || 10, 1),
+      50,
+    );
+    const skip = (page - 1) * limit;
+
+    const filter = {};
+    if (req.query.author) {
+      filter.author = req.query.author;
+    }
+
+    const [posts, total] = await Promise.all([
+      Post.find(filter)
+        .populate("author", "name email avatar")
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(limit)
+        .lean(),
+      Post.countDocuments(filter),
+    ]);
+
+    res.json({
+      posts,
+      pagination: {
+        page,
+        limit,
+        total,
+        totalPages: Math.ceil(total / limit),
+      },
+    });
+  } catch (err) {
+    console.error("Failed to fetch posts", err);
+    res.status(500).json({ message: "Server error" });
+  }
 };
 
 const getPostById = async (req, res) => {
