@@ -52,17 +52,17 @@ const Home = ({ loggedInUser, onLogout }) => {
       {/* modal for creating post */}
       {showModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-indigo-950/55 p-4 backdrop-blur-md">
-          <div className="relative my-auto flex max-h-[calc(100vh-2rem)] w-full max-w-2xl flex-col overflow-hidden rounded-3xl border border-indigo-200/90 bg-indigo-50/95 p-6 shadow-2xl shadow-indigo-300/50">
+          <div className="relative my-auto flex max-h-[calc(100vh-2rem)] w-full max-w-2xl flex-col overflow-hidden rounded-3xl border border-indigo-200/90 bg-indigo-50/95 p-6 shadow-2xl shadow-indigo-300/50 dark:border-[#697565]/30 dark:bg-[#3C3D37]">
             <button
-              className="absolute right-4 top-4 rounded-lg px-2 py-1 text-2xl leading-none text-indigo-400 transition hover:bg-indigo-50 hover:text-indigo-700"
+              className="absolute right-4 top-4 rounded-lg px-2 py-1 text-2xl leading-none text-indigo-400 transition hover:bg-indigo-50 hover:text-indigo-700 dark:text-[#697565] dark:hover:bg-[#181C14]/70 dark:hover:text-[#ECDFCC]"
               onClick={closeModal}
             >
               ×
             </button>
-            <h2 className="mb-1 text-2xl font-bold text-indigo-950">
+            <h2 className="mb-1 text-2xl font-bold text-indigo-950 dark:text-[#ECDFCC]">
               {isEditMode ? "Update post" : "Create a new post"}
             </h2>
-            <p className="mb-5 text-sm leading-6 text-indigo-600">
+            <p className="mb-5 text-sm leading-6 text-indigo-600 dark:text-[#697565]">
               {isEditMode
                 ? "Edit your title, content, media, and tags to save changes."
                 : "Write your title, content, and tags to publish instantly."}

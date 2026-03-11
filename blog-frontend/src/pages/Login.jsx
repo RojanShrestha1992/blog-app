@@ -24,7 +24,7 @@ const Login = ({ onLogin }) => {
   }
   return (
     <main className="min-h-screen bg-transparent px-4 py-10">
-      <div className="mx-auto max-w-5xl overflow-hidden rounded-3xl border border-indigo-200/90 bg-indigo-50/90 shadow-2xl shadow-indigo-300/60 backdrop-blur-sm lg:grid lg:grid-cols-2">
+      <div className="mx-auto max-w-5xl overflow-hidden rounded-3xl border border-indigo-200/90 bg-indigo-50/90 shadow-2xl shadow-indigo-300/60 backdrop-blur-sm dark:border-[#697565]/30 dark:bg-[#3C3D37] lg:grid lg:grid-cols-2">
         <section className="hidden rounded-l-3xl bg-indigo-900 p-10 text-indigo-50 lg:flex lg:flex-col lg:justify-between">
           <div>
             <p className="text-sm font-semibold uppercase tracking-[0.22em] text-indigo-200">BlogSpace</p>
@@ -36,17 +36,17 @@ const Login = ({ onLogin }) => {
 
         <section className="p-8 sm:p-10 lg:p-12">
           <div className="mb-8">
-            <h2 className="text-3xl font-bold text-indigo-950">Welcome back</h2>
-            <p className="mt-2 text-sm text-indigo-600">Sign in to manage your posts and profile.</p>
+            <h2 className="text-3xl font-bold text-indigo-950 dark:text-[#ECDFCC]">Welcome back</h2>
+            <p className="mt-2 text-sm text-indigo-600 dark:text-[#697565]">Sign in to manage your posts and profile.</p>
           </div>
 
           <form className="space-y-4" onSubmit={handleLogin}>
             <div>
-              <label className="mb-2 block text-sm font-medium text-indigo-800">Email</label>
+              <label className="mb-2 block text-sm font-medium text-indigo-800 dark:text-[#ECDFCC]/80">Email</label>
               <input
                 type="email"
                 placeholder="you@example.com"
-                className="w-full rounded-2xl border border-indigo-300 bg-indigo-100/70 px-4 py-3 text-indigo-950 outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100"
+                className="w-full rounded-2xl border border-indigo-300 bg-indigo-100/70 px-4 py-3 text-indigo-950 outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 dark:border-[#697565]/40 dark:bg-[#181C14]/70 dark:text-[#ECDFCC] dark:placeholder:text-[#697565]/60 dark:focus:ring-[#697565]/20"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
@@ -54,11 +54,11 @@ const Login = ({ onLogin }) => {
             </div>
 
             <div>
-              <label className="mb-2 block text-sm font-medium text-indigo-800">Password</label>
+              <label className="mb-2 block text-sm font-medium text-indigo-800 dark:text-[#ECDFCC]/80">Password</label>
               <input
                 type="password"
                 placeholder="••••••••"
-                className="w-full rounded-2xl border border-indigo-300 bg-indigo-100/70 px-4 py-3 text-indigo-950 outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100"
+                className="w-full rounded-2xl border border-indigo-300 bg-indigo-100/70 px-4 py-3 text-indigo-950 outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 dark:border-[#697565]/40 dark:bg-[#181C14]/70 dark:text-[#ECDFCC] dark:placeholder:text-[#697565]/60 dark:focus:ring-[#697565]/20"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
@@ -71,7 +71,7 @@ const Login = ({ onLogin }) => {
             >
               Login
             </button>
-            <p className="text-indigo-700">No Account? <span className="cursor-pointer font-medium text-violet-600 hover:text-violet-700" onClick={()=> navigate("/register")}>Register Here</span> </p>
+            <p className="text-indigo-700 dark:text-[#ECDFCC]/70">No Account? <span className="cursor-pointer font-medium text-violet-600 hover:text-violet-700 dark:text-[#ECDFCC] dark:hover:text-[#ECDFCC]/80" onClick={()=> navigate("/register")}>Register Here</span> </p>
           </form>
         </section>
       </div>  

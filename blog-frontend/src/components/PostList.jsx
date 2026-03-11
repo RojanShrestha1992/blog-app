@@ -4,6 +4,48 @@ import Post from './Post'
 
 const PAGE_SIZE = 10
 
+const PostSkeleton = () => (
+  <article className='overflow-hidden rounded-3xl border border-indigo-200/90 bg-white shadow-md shadow-indigo-200/70 dark:border-[#697565]/30 dark:bg-[#3C3D37]'>
+    {/* header */}
+    <div className='flex items-center gap-3 border-b border-indigo-100 px-5 py-4 dark:border-[#697565]/20'>
+      <div className='h-11 w-11 shrink-0 animate-pulse rounded-full bg-indigo-200 dark:bg-[#697565]/50' />
+      <div className='flex flex-1 flex-col gap-2'>
+        <div className='h-3.5 w-36 animate-pulse rounded-full bg-indigo-200 dark:bg-[#697565]/50' />
+        <div className='h-2.5 w-28 animate-pulse rounded-full bg-indigo-100 dark:bg-[#697565]/30' />
+      </div>
+      <div className='h-7 w-7 animate-pulse rounded-full bg-indigo-100 dark:bg-[#697565]/30' />
+    </div>
+    {/* body */}
+    <div className='px-5 py-4'>
+      {/* title */}
+      <div className='h-5 w-2/3 animate-pulse rounded-full bg-indigo-300 dark:bg-[#697565]/60' />
+      {/* content lines */}
+      <div className='mt-4 space-y-2.5'>
+        <div className='h-3 w-full animate-pulse rounded-full bg-indigo-100 dark:bg-[#697565]/25' />
+        <div className='h-3 w-[95%] animate-pulse rounded-full bg-indigo-100 dark:bg-[#697565]/25' />
+        <div className='h-3 w-4/5 animate-pulse rounded-full bg-indigo-100 dark:bg-[#697565]/25' />
+        <div className='h-3 w-3/5 animate-pulse rounded-full bg-indigo-100 dark:bg-[#697565]/25' />
+      </div>
+      {/* tag chips */}
+      <div className='mt-4 flex gap-2'>
+        <div className='h-6 w-14 animate-pulse rounded-full bg-violet-100 dark:bg-[#697565]/20' />
+        <div className='h-6 w-20 animate-pulse rounded-full bg-violet-100 dark:bg-[#697565]/20' />
+        <div className='h-6 w-16 animate-pulse rounded-full bg-violet-100 dark:bg-[#697565]/20' />
+      </div>
+    </div>
+    {/* image placeholder */}
+    <div className='px-5 pb-4'>
+      <div className='h-48 w-full animate-pulse rounded-2xl bg-indigo-100 dark:bg-[#697565]/15' />
+    </div>
+    {/* footer */}
+    <div className='flex items-center gap-3 border-t border-indigo-100 px-5 py-3 dark:border-[#697565]/20'>
+      <div className='h-8 w-14 animate-pulse rounded-full bg-indigo-200 dark:bg-[#697565]/40' />
+      <div className='h-8 w-20 animate-pulse rounded-full bg-indigo-200 dark:bg-[#697565]/40' />
+      <div className='h-8 w-16 animate-pulse rounded-full bg-indigo-200 dark:bg-[#697565]/40' />
+    </div>
+  </article>
+)
+
 const PostList = ({ filterByUser, currentUserId, onEditPost }) => {
   const [posts, setPosts] = useState([])
   const [page, setPage] = useState(1)
@@ -107,17 +149,19 @@ const PostList = ({ filterByUser, currentUserId, onEditPost }) => {
 
   return (
     <main className='mx-auto w-full max-w-3xl px-4 pb-10 pt-6 sm:px-6'>
-      <section className='mb-6 rounded-3xl border border-indigo-200/90 bg-indigo-50/85 px-5 py-5 shadow-lg shadow-indigo-200/70 backdrop-blur-sm'>
-        <h1 className='text-xl font-bold text-indigo-950 sm:text-2xl'>{feedTitle}</h1>
-        <p className='mt-1 text-sm leading-6 text-indigo-600'>{feedDescription}</p>
+      <section className='mb-6 rounded-3xl border border-indigo-200/90 bg-indigo-50/85 px-5 py-5 shadow-lg shadow-indigo-200/70 backdrop-blur-sm dark:border-[#697565]/30 dark:bg-[#3C3D37]/60'>
+        <h1 className='text-xl font-bold text-indigo-950 sm:text-2xl dark:text-[#ECDFCC]'>{feedTitle}</h1>
+        <p className='mt-1 text-sm leading-6 text-indigo-600 dark:text-[#697565]'>{feedDescription}</p>
       </section>
 
       {initialLoading && posts.length === 0 ? (
-        <div className='rounded-3xl border border-dashed border-indigo-300 bg-indigo-50/80 p-12 text-center text-indigo-700 shadow-sm'>
-          Loading posts...
+        <div className='space-y-5'>
+          {Array.from({ length: 3 }).map((_, i) => (
+            <PostSkeleton key={i} />
+          ))}
         </div>
       ) : posts.length === 0 ? (
-        <div className='rounded-3xl border border-dashed border-indigo-300 bg-indigo-50/80 p-12 text-center text-indigo-700 shadow-sm'>
+        <div className='rounded-3xl border border-dashed border-indigo-300 bg-indigo-50/80 p-12 text-center text-indigo-700 shadow-sm dark:border-[#697565]/30 dark:bg-[#3C3D37]/40 dark:text-[#ECDFCC]/70'>
          {filterByUser ? "You haven't posted anything yet." : "No posts yet. Be the first to share something."}
         </div>
       ) : (
@@ -136,9 +180,7 @@ const PostList = ({ filterByUser, currentUserId, onEditPost }) => {
           }
 
           {loadingMore && (
-            <div className='rounded-3xl border border-indigo-200 bg-indigo-50/85 p-4 text-center text-sm text-indigo-700 shadow-sm'>
-              Loading more posts...
-            </div>
+            <PostSkeleton />
           )}
 
           {hasMore && <div ref={observerTargetRef} className='h-1' aria-hidden='true' />}

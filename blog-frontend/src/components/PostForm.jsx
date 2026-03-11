@@ -77,9 +77,9 @@ const PostForm = ({ onPostCreated, mode = "create", initialPost = null }) => {
   return (
     <form className="space-y-5 " onSubmit={handleSubmit}>
       <div>
-        <label className="mb-2 block text-sm font-medium text-indigo-800">Title</label>
+        <label className="mb-2 block text-sm font-medium text-indigo-800 dark:text-[#ECDFCC]/80">Title</label>
         <input
-          className="w-full rounded-2xl border border-indigo-300 bg-indigo-100/70 px-4 py-3 text-indigo-950 outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100"
+          className="w-full rounded-2xl border border-indigo-300 bg-indigo-100/70 px-4 py-3 text-indigo-950 outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 dark:border-[#697565]/40 dark:bg-[#181C14]/70 dark:text-[#ECDFCC] dark:placeholder:text-[#697565]/60 dark:focus:ring-[#697565]/20"
           type="text"
           placeholder="Post title"
           value={title}
@@ -88,34 +88,34 @@ const PostForm = ({ onPostCreated, mode = "create", initialPost = null }) => {
       </div>
 
       <div>
-        <label className="mb-2 block text-sm font-medium text-indigo-800">Content</label>
+        <label className="mb-2 block text-sm font-medium text-indigo-800 dark:text-[#ECDFCC]/80">Content</label>
         <textarea
           placeholder="Write your story..."
           value={content}
           onChange={(e) => setContent(e.target.value)}
-          className="min-h-40 w-full rounded-2xl border border-indigo-300 bg-indigo-100/70 px-4 py-3 text-indigo-950 outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100"
+          className="min-h-40 w-full rounded-2xl border border-indigo-300 bg-indigo-100/70 px-4 py-3 text-indigo-950 outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 dark:border-[#697565]/40 dark:bg-[#181C14]/70 dark:text-[#ECDFCC] dark:placeholder:text-[#697565]/60 dark:focus:ring-[#697565]/20"
         ></textarea>
       </div>
       <div>
-        <label className="mb-2 block text-sm font-medium text-indigo-800">Media</label>
+        <label className="mb-2 block text-sm font-medium text-indigo-800 dark:text-[#ECDFCC]/80">Media</label>
         <input
           type="file"
           accept="image/*,video/*"
           onChange={(e) => setFile(e.target.files[0] || null)}
-          className="w-full rounded-2xl border border-indigo-300 bg-indigo-100/70 p-2.5 text-indigo-900 file:mr-4 file:rounded-xl file:border-0 file:bg-indigo-200 file:px-3 file:py-2 file:text-sm file:font-medium file:text-indigo-800 hover:file:bg-indigo-300"
+          className="w-full rounded-2xl border border-indigo-300 bg-indigo-100/70 p-2.5 text-indigo-900 file:mr-4 file:rounded-xl file:border-0 file:bg-indigo-200 file:px-3 file:py-2 file:text-sm file:font-medium file:text-indigo-800 hover:file:bg-indigo-300 dark:border-[#697565]/40 dark:bg-[#181C14]/70 dark:text-[#ECDFCC]/80 dark:file:bg-[#697565]/40 dark:file:text-[#ECDFCC]/90 dark:hover:file:bg-[#697565]/60"
         />
       </div>
 
       <div>
-        <label className="mb-2 block text-sm font-medium text-indigo-800">Tags</label>
+        <label className="mb-2 block text-sm font-medium text-indigo-800 dark:text-[#ECDFCC]/80">Tags</label>
         <input
           type="text"
           placeholder="react javascript tutorial"
           value={tags}
           onChange={(e) => setTags(e.target.value)}
-          className="w-full rounded-2xl border border-indigo-300 bg-indigo-100/70 px-4 py-3 text-indigo-950 outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100"
+          className="w-full rounded-2xl border border-indigo-300 bg-indigo-100/70 px-4 py-3 text-indigo-950 outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 dark:border-[#697565]/40 dark:bg-[#181C14]/70 dark:text-[#ECDFCC] dark:placeholder:text-[#697565]/60 dark:focus:ring-[#697565]/20"
         />
-        <p className="mt-2 text-xs text-indigo-500">Use spaces between each tag.</p>
+        <p className="mt-2 text-xs text-indigo-500 dark:text-[#697565]">Use spaces between each tag.</p>
       </div>
 
       <button type="submit" className="inline-flex rounded-2xl bg-indigo-600 px-5 py-3 font-semibold text-white shadow-sm shadow-indigo-200 transition hover:bg-indigo-700">

@@ -172,8 +172,8 @@ const Post = ({ post, isOwner=false, refreshPosts, currentUserId, onEditPost }) 
   };
 
   return (
-    <article className="overflow-hidden rounded-3xl border border-indigo-200/90 bg-[#E7E7E7] shadow-md shadow-indigo-200/70 transition hover:-translate-y-0.5 hover:shadow-lg">
-      <header className="flex justify-between items-center gap-3 border-b border-indigo-100 px-5 py-4">
+    <article className="overflow-hidden rounded-3xl border border-indigo-200/90 bg-white shadow-md shadow-indigo-200/70 transition hover:-translate-y-0.5 hover:shadow-lg dark:border-[#697565]/30 dark:bg-[#3C3D37] dark:shadow-[#181C14]/60">
+      <header className="flex justify-between items-center gap-3 border-b border-indigo-100 px-5 py-4 dark:border-[#697565]/20">
         <div className="flex  gap-3">
           <>
         {authorAvatar ? (
@@ -188,10 +188,10 @@ const Post = ({ post, isOwner=false, refreshPosts, currentUserId, onEditPost }) 
           </div>
         )}
         <div className="min-w-0 flex-1">
-          <Link to={`/profile/${authorId}`} className="truncate text-sm font-semibold text-indigo-950">
+          <Link to={`/profile/${authorId}`} className="truncate text-sm font-semibold text-indigo-950 dark:text-[#ECDFCC]">
           {authorName}
           </Link>
-          <p className="text-xs text-indigo-500">
+          <p className="text-xs text-indigo-500 dark:text-[#697565]">
             {formatTimeAgo(createdDate)}
             <span className="mx-1">•</span>
             {createdDate.toLocaleString()}
@@ -205,13 +205,13 @@ const Post = ({ post, isOwner=false, refreshPosts, currentUserId, onEditPost }) 
               <button
                 type="button"
                 onClick={() => setShowMenu((prev) => !prev)}
-                className="rounded-full p-1 transition duration-150 hover:bg-indigo-100 cursor-pointer text-black"
+                className="rounded-full p-1 transition duration-150 hover:bg-indigo-100 cursor-pointer text-black dark:text-[#ECDFCC]/60 dark:hover:bg-[#181C14]/60"
               >
                 <CiMenuKebab className="w-5 h-5" />
               </button>
 
               <div
-                className={`${showMenu ? "flex" : "hidden"} flex-col transition duration-200 absolute right-0 top-8 z-20 gap-2 rounded-lg border border-indigo-200 bg-white p-2 shadow-lg`}
+                className={`${showMenu ? "flex" : "hidden"} flex-col transition duration-200 absolute right-0 top-8 z-20 gap-2 rounded-lg border border-indigo-200 bg-white p-2 shadow-lg dark:border-[#697565]/50 dark:bg-[#181C14]`}
               >
                 <button
                   type="button"
@@ -246,10 +246,10 @@ const Post = ({ post, isOwner=false, refreshPosts, currentUserId, onEditPost }) 
       </header>
 
       <div className="px-5 py-4">
-        <h2 className="text-lg font-bold leading-snug text-indigo-950 sm:text-xl">
+        <h2 className="text-lg font-bold leading-snug text-indigo-950 sm:text-xl dark:text-[#ECDFCC]">
           {postData.title}
         </h2>
-        <p className="mt-3 whitespace-pre-line text-[15px] leading-7 text-indigo-900/85">
+        <p className="mt-3 whitespace-pre-line text-[15px] leading-7 text-indigo-900/85 dark:text-[#ECDFCC]/75">
           {postData.content}
         </p>
 
@@ -258,7 +258,7 @@ const Post = ({ post, isOwner=false, refreshPosts, currentUserId, onEditPost }) 
             {(postData.tags || []).map((tag) => (
               <span
                 key={tag}
-                className="rounded-full bg-violet-200/80 px-3 py-1 text-xs font-medium text-violet-800"
+                className="rounded-full bg-violet-200/80 px-3 py-1 text-xs font-medium text-violet-800 dark:bg-[#697565]/25 dark:text-[#ECDFCC]/80"
               >
                 #{tag}
               </span>
@@ -271,7 +271,7 @@ const Post = ({ post, isOwner=false, refreshPosts, currentUserId, onEditPost }) 
           {postData.media.match(/\.(mp4|webm|ogg)$/i) ? (
             <video
               controls
-              autoPlay={true}
+              autoPlay={false}
               className="mt-2 max-h-115 w-full rounded-2xl object-cover ring-1 ring-indigo-100"
             >
               <source src={postData.media} />
@@ -286,18 +286,18 @@ const Post = ({ post, isOwner=false, refreshPosts, currentUserId, onEditPost }) 
         </div>
       )}
 
-      <div className="flex items-center justify-between border-t border-indigo-100 px-5 py-3 text-sm text-indigo-600">
+      <div className="flex items-center justify-between border-t border-indigo-100 px-5 py-3 text-sm text-indigo-600 dark:border-[#697565]/20 dark:text-[#697565]">
         <div className="flex items-center gap-4">
           <button
             type="button"
             onClick={handleUpvote}
             disabled={!currentUserId || isUpvoting}
-            className={`rounded-full px-3 py-1.5 font-medium flex items-center gap-1.5 transition text-lg ${hasUpvoted ? "text-red-600" : "text-indigo-700"} ${!currentUserId || isUpvoting ? "cursor-not-allowed opacity-60" : "cursor-pointer hover:bg-indigo-100 hover:text-red-600"}`}
+            className={`rounded-full px-3 py-1.5 font-medium flex items-center gap-1.5 transition text-lg ${hasUpvoted ? "text-red-600" : "text-indigo-700 dark:text-[#ECDFCC]/70"} ${!currentUserId || isUpvoting ? "cursor-not-allowed opacity-60" : "cursor-pointer hover:bg-indigo-100 hover:text-red-600 dark:hover:bg-[#181C14]/60"}`}
           >
             <BiUpvote />
             {(postData.upvotes || []).length}
           </button>
-          <button  onClick={()=> setShowCommentBox(!showCommentBox)} className="cursor-pointer font-medium transition hover:text-indigo-900">
+          <button  onClick={()=> setShowCommentBox(!showCommentBox)} className="cursor-pointer font-medium transition hover:text-indigo-900 dark:hover:text-[#ECDFCC]">
             💬 Comment
           </button>
         </div>
@@ -305,7 +305,7 @@ const Post = ({ post, isOwner=false, refreshPosts, currentUserId, onEditPost }) 
           type="button"
           onClick={handleSharePost}
           disabled={isSharing}
-          className={`rounded-full px-3 py-1.5 font-medium transition ${isSharing ? "cursor-not-allowed opacity-60" : "hover:bg-indigo-100 hover:text-indigo-900"}`}
+          className={`rounded-full px-3 py-1.5 font-medium transition ${isSharing ? "cursor-not-allowed opacity-60" : "hover:bg-indigo-100 hover:text-indigo-900 dark:hover:bg-[#181C14]/60 dark:hover:text-[#ECDFCC]"}`}
         >
           ↗ Share
         </button>
@@ -318,7 +318,7 @@ const Post = ({ post, isOwner=false, refreshPosts, currentUserId, onEditPost }) 
             value={commentText}
             onChange={(e) => setCommentText(e.target.value)}
             placeholder="Add a comment..."
-            className="flex-1 rounded-full border border-indigo-200 bg-white px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            className="flex-1 rounded-full border border-indigo-200 bg-white px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:border-[#697565]/40 dark:bg-[#181C14]/70 dark:text-[#ECDFCC] dark:placeholder:text-[#697565]"
           />
           <button
             type="submit"
@@ -328,14 +328,12 @@ const Post = ({ post, isOwner=false, refreshPosts, currentUserId, onEditPost }) 
           </button>
         </form>
         <div className="px-5 py-3 space-y-2">
-          {
-            comments.length === 0 && (
-              <p className="text-sm text-indigo-500">No comments yet. Be the first to comment!</p>
-            )
-          }
+          {comments.length === 0 && (
+              <p className="text-sm text-indigo-500 dark:text-[#697565]">No comments yet. Be the first to comment!</p>
+            )}
           {
             comments.map((comment) => (
-              <div key={comment._id} className="border border-indigo-100 rounded-lg px-4 py-2">
+              <div key={comment._id} className="border border-indigo-100 rounded-lg px-4 py-2 dark:border-[#697565]/25">
                 <div className="flex items-start gap-2">
                   {comment.user?.avatar ? (
                     <img
@@ -349,9 +347,9 @@ const Post = ({ post, isOwner=false, refreshPosts, currentUserId, onEditPost }) 
                     </div>
                   )}
                   <div className="min-w-0 flex-1">
-                    <Link to={`/profile/${comment.user?._id}`} className="text-sm font-semibold text-indigo-900">{comment.user?.name || "Unknown"}</Link>
-                    <p className="text-sm text-indigo-700">{comment.text}</p>
-                    <p className="text-xs text-indigo-500">{formatTimeAgo(new Date(comment.createdAt))}</p>
+                    <Link to={`/profile/${comment.user?._id}`} className="text-sm font-semibold text-indigo-900 dark:text-[#ECDFCC]/90">{comment.user?.name || "Unknown"}</Link>
+                    <p className="text-sm text-indigo-700 dark:text-[#ECDFCC]/70">{comment.text}</p>
+                    <p className="text-xs text-indigo-500 dark:text-[#697565]/70">{formatTimeAgo(new Date(comment.createdAt))}</p>
                   </div>
                 </div>
               </div>
