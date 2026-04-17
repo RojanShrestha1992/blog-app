@@ -1,52 +1,53 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { fetchPosts } from '../api/api'
 import Post from './Post'
+import { toast } from 'react-toastify'
 
 const PAGE_SIZE = 10
 
 const PostSkeleton = () => (
-  <article className='overflow-hidden rounded-3xl border border-indigo-200/90 bg-white shadow-md shadow-indigo-200/70 dark:border-[#697565]/30 dark:bg-[#3C3D37]'>
+  <article className='overflow-hidden rounded-2xl border border-slate-200/80 bg-white shadow-sm shadow-slate-200/70 dark:border-slate-700 dark:bg-slate-900/90 dark:shadow-black/30 dark:ring-1 dark:ring-white/5'>
     {/* header */}
-    <div className='flex items-center gap-3 border-b border-indigo-100 px-5 py-4 dark:border-[#697565]/20'>
-      <div className='h-11 w-11 shrink-0 animate-pulse rounded-full bg-indigo-200 dark:bg-[#697565]/50' />
+    <div className='flex items-center gap-3 border-b border-slate-100 px-4 py-3.5 dark:border-slate-700'>
+      <div className='h-10 w-10 shrink-0 animate-pulse rounded-full bg-slate-200 dark:bg-slate-700' />
       <div className='flex flex-1 flex-col gap-2'>
-        <div className='h-3.5 w-36 animate-pulse rounded-full bg-indigo-200 dark:bg-[#697565]/50' />
-        <div className='h-2.5 w-28 animate-pulse rounded-full bg-indigo-100 dark:bg-[#697565]/30' />
+        <div className='h-3.5 w-36 animate-pulse rounded-full bg-slate-200 dark:bg-slate-700' />
+        <div className='h-2.5 w-28 animate-pulse rounded-full bg-slate-100 dark:bg-slate-800' />
       </div>
-      <div className='h-7 w-7 animate-pulse rounded-full bg-indigo-100 dark:bg-[#697565]/30' />
+      <div className='h-7 w-7 animate-pulse rounded-full bg-slate-100 dark:bg-slate-800' />
     </div>
     {/* body */}
-    <div className='px-5 py-4'>
+    <div className='px-4 py-4'>
       {/* title */}
-      <div className='h-5 w-2/3 animate-pulse rounded-full bg-indigo-300 dark:bg-[#697565]/60' />
+      <div className='h-5 w-2/3 animate-pulse rounded-full bg-slate-300 dark:bg-slate-700' />
       {/* content lines */}
       <div className='mt-4 space-y-2.5'>
-        <div className='h-3 w-full animate-pulse rounded-full bg-indigo-100 dark:bg-[#697565]/25' />
-        <div className='h-3 w-[95%] animate-pulse rounded-full bg-indigo-100 dark:bg-[#697565]/25' />
-        <div className='h-3 w-4/5 animate-pulse rounded-full bg-indigo-100 dark:bg-[#697565]/25' />
-        <div className='h-3 w-3/5 animate-pulse rounded-full bg-indigo-100 dark:bg-[#697565]/25' />
+        <div className='h-3 w-full animate-pulse rounded-full bg-slate-100 dark:bg-slate-800' />
+        <div className='h-3 w-[95%] animate-pulse rounded-full bg-slate-100 dark:bg-slate-800' />
+        <div className='h-3 w-4/5 animate-pulse rounded-full bg-slate-100 dark:bg-slate-800' />
+        <div className='h-3 w-3/5 animate-pulse rounded-full bg-slate-100 dark:bg-slate-800' />
       </div>
       {/* tag chips */}
       <div className='mt-4 flex gap-2'>
-        <div className='h-6 w-14 animate-pulse rounded-full bg-violet-100 dark:bg-[#697565]/20' />
-        <div className='h-6 w-20 animate-pulse rounded-full bg-violet-100 dark:bg-[#697565]/20' />
-        <div className='h-6 w-16 animate-pulse rounded-full bg-violet-100 dark:bg-[#697565]/20' />
+        <div className='h-6 w-14 animate-pulse rounded-full bg-slate-100 dark:bg-slate-800' />
+        <div className='h-6 w-20 animate-pulse rounded-full bg-slate-100 dark:bg-slate-800' />
+        <div className='h-6 w-16 animate-pulse rounded-full bg-slate-100 dark:bg-slate-800' />
       </div>
     </div>
     {/* image placeholder */}
-    <div className='px-5 pb-4'>
-      <div className='h-48 w-full animate-pulse rounded-2xl bg-indigo-100 dark:bg-[#697565]/15' />
+    <div className='px-4 pb-4'>
+      <div className='h-40 w-full animate-pulse rounded-2xl bg-slate-100 dark:bg-slate-800' />
     </div>
     {/* footer */}
-    <div className='flex items-center gap-3 border-t border-indigo-100 px-5 py-3 dark:border-[#697565]/20'>
-      <div className='h-8 w-14 animate-pulse rounded-full bg-indigo-200 dark:bg-[#697565]/40' />
-      <div className='h-8 w-20 animate-pulse rounded-full bg-indigo-200 dark:bg-[#697565]/40' />
-      <div className='h-8 w-16 animate-pulse rounded-full bg-indigo-200 dark:bg-[#697565]/40' />
+    <div className='flex items-center gap-3 border-t border-slate-100 px-4 py-3 dark:border-slate-700'>
+      <div className='h-8 w-14 animate-pulse rounded-full bg-slate-200 dark:bg-slate-700' />
+      <div className='h-8 w-20 animate-pulse rounded-full bg-slate-200 dark:bg-slate-700' />
+      <div className='h-8 w-16 animate-pulse rounded-full bg-slate-200 dark:bg-slate-700' />
     </div>
   </article>
 )
 
-const PostList = ({ filterByUser, currentUserId, onEditPost }) => {
+const PostList = ({ filterByUser, currentUserId, onEditPost, onCreatePost }) => {
   const [posts, setPosts] = useState([])
   const [page, setPage] = useState(1)
   const [hasMore, setHasMore] = useState(true)
@@ -148,10 +149,46 @@ const PostList = ({ filterByUser, currentUserId, onEditPost }) => {
   }, [hasMore, page, loadPosts])
 
   return (
-    <main className='mx-auto w-full max-w-3xl px-4 pb-10 pt-6 sm:px-6'>
-      <section className='mb-6 rounded-3xl border border-indigo-200/90 bg-indigo-50/85 px-5 py-5 shadow-lg shadow-indigo-200/70 backdrop-blur-sm dark:border-[#697565]/30 dark:bg-[#3C3D37]/60'>
-        <h1 className='text-xl font-bold text-indigo-950 sm:text-2xl dark:text-[#ECDFCC]'>{feedTitle}</h1>
-        <p className='mt-1 text-sm leading-6 text-indigo-600 dark:text-[#697565]'>{feedDescription}</p>
+    <main className='mx-auto w-full max-w-3xl px-4 pb-12 pt-6 sm:px-6 lg:px-8'>
+      {!filterByUser && (
+        <section className='mb-5 overflow-hidden rounded-2xl border border-slate-200/80 bg-white/90 p-4 shadow-sm shadow-slate-200/60 backdrop-blur-sm dark:border-slate-700 dark:bg-slate-900/90 dark:shadow-black/30 dark:ring-1 dark:ring-white/5'>
+          <div className='flex items-center gap-3'>
+            <button
+              type='button'
+              onClick={() => {
+                if (!currentUserId) {
+                  toast.error('Please login first to create a post.');
+                  return;
+                }
+
+                onCreatePost?.();
+              }}
+              className='flex-1 rounded-full border border-slate-200 bg-slate-50 px-4 py-3 text-left text-sm text-slate-500 transition hover:border-indigo-200 hover:bg-indigo-50 hover:text-slate-700 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-400 dark:hover:border-slate-600 dark:hover:bg-slate-800 dark:hover:text-slate-200'
+            >
+              What’s on your mind?
+            </button>
+            <button
+              type='button'
+              onClick={() => {
+                if (!currentUserId) {
+                  toast.error('Please login first to create a post.');
+                  return;
+                }
+
+                onCreatePost?.();
+              }}
+              className='rounded-full bg-linear-to-r from-indigo-600 to-blue-600 px-4 py-3 text-sm font-semibold text-white shadow-lg shadow-indigo-500/20 transition hover:-translate-y-0.5 hover:shadow-indigo-500/30'
+            >
+              Post
+            </button>
+          </div>
+        </section>
+      )}
+
+      <section className='mb-5 overflow-hidden rounded-2xl border border-slate-200/80 bg-white/85 px-4 py-4 shadow-sm shadow-slate-200/60 backdrop-blur-sm dark:border-slate-800 dark:bg-slate-900/80 dark:shadow-black/20'>
+        <p className='text-xs font-semibold uppercase tracking-[0.24em] text-indigo-600 dark:text-indigo-400'>Feed</p>
+        <h1 className='mt-1.5 text-2xl font-semibold tracking-tight text-slate-950 dark:text-slate-50'>{feedTitle}</h1>
+        <p className='mt-1.5 max-w-xl text-sm leading-6 text-slate-600 dark:text-slate-400'>{feedDescription}</p>
       </section>
 
       {initialLoading && posts.length === 0 ? (
@@ -161,11 +198,11 @@ const PostList = ({ filterByUser, currentUserId, onEditPost }) => {
           ))}
         </div>
       ) : posts.length === 0 ? (
-        <div className='rounded-3xl border border-dashed border-indigo-300 bg-indigo-50/80 p-12 text-center text-indigo-700 shadow-sm dark:border-[#697565]/30 dark:bg-[#3C3D37]/40 dark:text-[#ECDFCC]/70'>
+        <div className='rounded-2xl border border-dashed border-slate-300 bg-white/80 p-10 text-center text-slate-600 shadow-sm dark:border-slate-700 dark:bg-slate-900/60 dark:text-slate-400'>
          {filterByUser ? "You haven't posted anything yet." : "No posts yet. Be the first to share something."}
         </div>
       ) : (
-        <div className='space-y-5'>
+        <div className='space-y-4'>
           {
             posts.map((post)=>(
               <Post

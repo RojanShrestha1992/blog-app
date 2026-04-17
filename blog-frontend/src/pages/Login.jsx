@@ -23,30 +23,31 @@ const Login = ({ onLogin }) => {
 
   }
   return (
-    <main className="min-h-screen bg-transparent px-4 py-10">
-      <div className="mx-auto max-w-5xl overflow-hidden rounded-3xl border border-indigo-200/90 bg-indigo-50/90 shadow-2xl shadow-indigo-300/60 backdrop-blur-sm dark:border-[#697565]/30 dark:bg-[#3C3D37] lg:grid lg:grid-cols-2">
-        <section className="hidden rounded-l-3xl bg-indigo-900 p-10 text-indigo-50 lg:flex lg:flex-col lg:justify-between">
+    <main className="min-h-screen bg-transparent px-4 py-10 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-5xl overflow-hidden rounded-3xl border border-slate-200 bg-white/90 shadow-2xl shadow-slate-200/60 backdrop-blur-sm dark:border-slate-800 dark:bg-slate-950 lg:grid lg:grid-cols-2">
+        <section className="hidden rounded-l-3xl bg-linear-to-br from-slate-950 via-indigo-950 to-slate-900 p-10 text-slate-50 lg:flex lg:flex-col lg:justify-between">
           <div>
-            <p className="text-sm font-semibold uppercase tracking-[0.22em] text-indigo-200">BlogSpace</p>
-            <h1 className="mt-6 text-4xl font-bold leading-tight">Write ideas that people actually want to read.</h1>
-            <p className="mt-4 text-indigo-200">Share stories, publish updates, and keep everything organized in one clean workspace.</p>
+            <p className="text-sm font-semibold uppercase tracking-[0.24em] text-indigo-300">BlogSpace</p>
+            <h1 className="mt-6 text-4xl font-semibold leading-tight text-white">Write ideas that look as polished as they read.</h1>
+            <p className="mt-4 max-w-md text-slate-300">A modern publishing workspace for thoughtful updates, quick comments, and a premium reading experience.</p>
           </div>
-          <p className="text-sm text-indigo-300">Simple publishing, better reading experience.</p>
+          <p className="text-sm text-slate-400">Simple publishing, better reading experience.</p>
         </section>
 
         <section className="p-8 sm:p-10 lg:p-12">
           <div className="mb-8">
-            <h2 className="text-3xl font-bold text-indigo-950 dark:text-[#ECDFCC]">Welcome back</h2>
-            <p className="mt-2 text-sm text-indigo-600 dark:text-[#697565]">Sign in to manage your posts and profile.</p>
+            <p className="text-sm font-semibold uppercase tracking-[0.22em] text-indigo-600 dark:text-indigo-400">Sign in</p>
+            <h2 className="mt-3 text-3xl font-semibold tracking-tight text-slate-950 dark:text-slate-50">Welcome back</h2>
+            <p className="mt-2 text-sm text-slate-600 dark:text-slate-400">Sign in to manage your posts and profile.</p>
           </div>
 
           <form className="space-y-4" onSubmit={handleLogin}>
             <div>
-              <label className="mb-2 block text-sm font-medium text-indigo-800 dark:text-[#ECDFCC]/80">Email</label>
+              <label className="mb-2 block text-sm font-medium text-slate-700 dark:text-slate-300">Email</label>
               <input
                 type="email"
                 placeholder="you@example.com"
-                className="w-full rounded-2xl border border-indigo-300 bg-indigo-100/70 px-4 py-3 text-indigo-950 outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 dark:border-[#697565]/40 dark:bg-[#181C14]/70 dark:text-[#ECDFCC] dark:placeholder:text-[#697565]/60 dark:focus:ring-[#697565]/20"
+                className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-900 outline-none transition-all duration-200 placeholder:text-slate-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-100 dark:placeholder:text-slate-500"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
@@ -54,11 +55,11 @@ const Login = ({ onLogin }) => {
             </div>
 
             <div>
-              <label className="mb-2 block text-sm font-medium text-indigo-800 dark:text-[#ECDFCC]/80">Password</label>
+              <label className="mb-2 block text-sm font-medium text-slate-700 dark:text-slate-300">Password</label>
               <input
                 type="password"
                 placeholder="••••••••"
-                className="w-full rounded-2xl border border-indigo-300 bg-indigo-100/70 px-4 py-3 text-indigo-950 outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 dark:border-[#697565]/40 dark:bg-[#181C14]/70 dark:text-[#ECDFCC] dark:placeholder:text-[#697565]/60 dark:focus:ring-[#697565]/20"
+                className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-900 outline-none transition-all duration-200 placeholder:text-slate-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-100 dark:placeholder:text-slate-500"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
@@ -67,11 +68,11 @@ const Login = ({ onLogin }) => {
 
             <button
               type="submit"
-              className="mt-2 w-full rounded-2xl bg-indigo-600 px-4 py-3 font-semibold text-white shadow-sm shadow-indigo-200 transition hover:bg-indigo-700"
+              className="mt-2 w-full rounded-2xl bg-linear-to-r from-indigo-600 to-blue-600 px-4 py-3 font-semibold text-white shadow-lg shadow-indigo-500/20 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-indigo-500/30"
             >
               Login
             </button>
-            <p className="text-indigo-700 dark:text-[#ECDFCC]/70">No Account? <span className="cursor-pointer font-medium text-violet-600 hover:text-violet-700 dark:text-[#ECDFCC] dark:hover:text-[#ECDFCC]/80" onClick={()=> navigate("/register")}>Register Here</span> </p>
+            <p className="text-slate-600 dark:text-slate-400">No account? <span className="cursor-pointer font-medium text-indigo-600 hover:text-indigo-700 dark:text-indigo-400 dark:hover:text-indigo-300" onClick={()=> navigate("/register")}>Register here</span></p>
           </form>
         </section>
       </div>  

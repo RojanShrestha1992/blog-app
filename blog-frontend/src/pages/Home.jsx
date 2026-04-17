@@ -1,5 +1,4 @@
-import React, { useState } from "react";
-import { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import PostList from "../components/PostList";
 import PostForm from "../components/PostForm";
@@ -25,13 +24,12 @@ const Home = ({ loggedInUser, onLogout }) => {
 
   const handleNavClick = (view) => {
     if (view === "create") {
-      setModalMode("create");
-      setEditingPost(null);
-      setShowModal(true);
+      openCreateModal();
     } else {
       setCurrentView(view);
     }
   };
+
   const handleEditPost = (post) => {
     setEditingPost(post);
     setModalMode("edit");
@@ -45,52 +43,59 @@ const Home = ({ loggedInUser, onLogout }) => {
   };
 
   const isEditMode = modalMode === "edit" && Boolean(editingPost?._id);
+
+  const openCreateModal = () => {
+    setModalMode("create");
+    setEditingPost(null);
+    setShowModal(true);
+  };
+
+  const handlePostSaved = () => {
+    setShowModal(false);
+    setEditingPost(null);
+    setModalMode("create");
+    setRefresh((value) => !value);
+    toast.success(isEditMode ? "Post updated successfully!" : "Post created successfully!");
+  };
+
   return (
-    <div className="min-h-screen bg-transparent">
+    <div className="min-h-screen bg-transparent pb-8">
       <Navbar onNavClick={handleNavClick} user={loggedInUser} onLogout={onLogout} />
 
-      {/* modal for creating post */}
       {showModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-indigo-950/55 p-4 backdrop-blur-md">
-          <div className="relative my-auto flex max-h-[calc(100vh-2rem)] w-full max-w-2xl flex-col overflow-hidden rounded-3xl border border-indigo-200/90 bg-indigo-50/95 p-6 shadow-2xl shadow-indigo-300/50 dark:border-[#697565]/30 dark:bg-[#3C3D37]">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/55 p-4 backdrop-blur-md">
+          <div className="relative my-auto flex max-h-[calc(100vh-2rem)] w-full max-w-2xl flex-col overflow-hidden rounded-3xl border border-slate-200 bg-white p-6 shadow-2xl dark:border-slate-800 dark:bg-slate-950">
             <button
-              className="absolute right-4 top-4 rounded-lg px-2 py-1 text-2xl leading-none text-indigo-400 transition hover:bg-indigo-50 hover:text-indigo-700 dark:text-[#697565] dark:hover:bg-[#181C14]/70 dark:hover:text-[#ECDFCC]"
+              className="absolute right-4 top-4 rounded-full px-3 py-2 text-2xl leading-none text-slate-400 transition hover:bg-slate-100 hover:text-slate-700 dark:hover:bg-slate-900 dark:hover:text-slate-200"
               onClick={closeModal}
             >
               ×
             </button>
-            <h2 className="mb-1 text-2xl font-bold text-indigo-950 dark:text-[#ECDFCC]">
+            <h2 className="mb-1 text-2xl font-semibold tracking-tight text-slate-950 dark:text-slate-50">
               {isEditMode ? "Update post" : "Create a new post"}
             </h2>
-            <p className="mb-5 text-sm leading-6 text-indigo-600 dark:text-[#697565]">
+            <p className="mb-5 text-sm leading-6 text-slate-600 dark:text-slate-400">
               {isEditMode
-                ? "Edit your title, content, media, and tags to save changes."
-                : "Write your title, content, and tags to publish instantly."}
+                ? "Refine your title, content, media, and tags before saving."
+                : "Compose a clear post with tags and optional media, then publish it."}
             </p>
             <div className="min-h-0 flex-1 overflow-y-auto pr-1">
-              <PostForm 
+              <PostForm
                 mode={isEditMode ? "edit" : "create"}
                 initialPost={editingPost}
-                onPostCreated={() => {
-                  setShowModal(false);
-                  setEditingPost(null);
-                  setModalMode("create");
-                  setRefresh(!refresh);
-                  toast.success(isEditMode ? "Post updated successfully!" : "Post created successfully!");
-                }}
+                onPostCreated={handlePostSaved}
               />
             </div>
           </div>
         </div>
       )}
 
-
-      {/* Views */}
       {currentView === "all" && (
         <PostList
           key={refresh + "-all"}
           currentUserId={loggedInUserId}
           filterByUser={null}
+          onCreatePost={openCreateModal}
           onEditPost={handleEditPost}
         />
       )}
@@ -102,7 +107,6 @@ const Home = ({ loggedInUser, onLogout }) => {
           onEditPost={handleEditPost}
         />
       )}
-
     </div>
   );
 };
